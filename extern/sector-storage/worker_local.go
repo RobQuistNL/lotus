@@ -487,7 +487,7 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 	if err != nil {
 		panic(err)
 	}
-	hostname = hostname + os.Getenv("WORKER_OVERRIDE_ID")
+	hostname = hostname + "-" + os.Getenv("WORKER_OVERRIDE_ID")
 
 	gpus, err := ffi.GetGPUDevices()
 	if err != nil {
