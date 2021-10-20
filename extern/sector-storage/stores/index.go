@@ -158,6 +158,17 @@ func (i *Index) StorageAttach(ctx context.Context, si StorageInfo, st fsutil.FsS
 				if u == l {
 					continue uloop
 				}
+
+				if strings.Contains(u, "172.16.0.1") {
+					log.Info("Ignoring URL that contains 172.16.0.1")
+					continue uloop
+				}
+				//	log.Infow("Added URL: %s ", rl.String())
+				//} else {
+				//	log.Info("Ignoring URL that contains 172.16.0.1")
+				//}
+
+
 			}
 
 			i.stores[si.ID].info.URLs = append(i.stores[si.ID].info.URLs, u)
@@ -319,12 +330,12 @@ func (i *Index) StorageFindSector(ctx context.Context, s abi.SectorID, ft storif
 			}
 
 			rl.Path = gopath.Join(rl.Path, ft.String(), storiface.SectorName(s))
-			if !strings.Contains(rl.String(), "172.16.0.1") {
-				urls[k] = rl.String()
-				log.Infow("Added URL: %s ", rl.String())
-			} else {
-				log.Info("Ignoring URL that contains 172.16.0.1")
-			}
+			//if !strings.Contains(rl.String(), "172.16.0.1") {
+			urls[k] = rl.String()
+			//	log.Infow("Added URL: %s ", rl.String())
+			//} else {
+			//	log.Info("Ignoring URL that contains 172.16.0.1")
+			//}
 
 		}
 
