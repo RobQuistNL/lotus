@@ -397,11 +397,6 @@ func (sh *scheduler) trySched() {
 					continue
 				}
 
-				if ((task.taskType == sealtasks.TTFetch || task.taskType == sealtasks.TTFinalize) && worker.info.Hostname == "daemon-main") {
-					log.Debugw("skipping fetch or finalize task for daemon-main", "worker", windowRequest.worker)
-					continue
-				}
-
 				rpcCtx, cancel := context.WithTimeout(task.ctx, SelectorTimeout)
 				ok, err := task.sel.Ok(rpcCtx, task.taskType, task.sector.ProofType, worker)
 				cancel()
@@ -471,6 +466,11 @@ func (sh *scheduler) trySched() {
 
 			// TODO: allow bigger windows
 			if !windows[wnd].allocated.canHandleRequest(needRes, wid, "schedAssign", info) {
+				continue
+			}
+
+			if ((task.taskType == sealtasks.TTFetch || task.taskType == sealtasks.TTFinalize) && info.Hostname == "daemon-main") {
+				log.Debug("skipping fetch or finalize task for daemon-main")
 				continue
 			}
 
