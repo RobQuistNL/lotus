@@ -447,15 +447,21 @@ func (m *Manager) SealCommit1(ctx context.Context, sector storage.SectorRef, tic
 	// generally very cheap / fast, and transferring data is not worth the effort
 	selector := newExistingSelector(m.index, sector.ID, storiface.FTCache|storiface.FTSealed, false)
 
-	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit1, selector, m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove), func(ctx context.Context, w Worker) error {
-		err := m.startWork(ctx, w, wk)(w.SealCommit1(ctx, sector, ticket, seed, pieces, cids))
-		if err != nil {
-			return err
-		}
+	err = m.sched.Schedule(
+		ctx,
+		sector,
+		sealtasks.TTCommit1,
+		selector,
+		m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove),
+		func(ctx context.Context, w Worker) error {
+			err := m.startWork(ctx, w, wk)(w.SealCommit1(ctx, sector, ticket, seed, pieces, cids))
+			if err != nil {
+				return err
+			}
 
-		waitRes()
-		return nil
-	})
+			waitRes()
+			return nil
+		})
 	if err != nil {
 		return nil, err
 	}
@@ -487,9 +493,14 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 		return out, waitErr
 	}
 
-	selector := newTaskSelector()
+	if err := m.index.StorageLock(ctx, sector.ID, storiface.FTNone, storiface.FTSealed|storiface.FTUnsealed|storiface.FTCache); err != nil {
+		return out, xerrors.Errorf("acquiring sector lock: %w", err)
+	}
 
-	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit2, selector, schedNop, func(ctx context.Context, w Worker) error {
+	//selector := newTaskSelector()
+	selector := newExistingSelector(m.index, sector.ID, storiface.FTCache|storiface.FTSealed, false)
+
+	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit2, selector, m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove), func(ctx context.Context, w Worker) error {
 		err := m.startWork(ctx, w, wk)(w.SealCommit2(ctx, sector, phase1Out))
 		if err != nil {
 			return err

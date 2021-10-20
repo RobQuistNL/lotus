@@ -483,10 +483,11 @@ func (l *LocalWorker) Paths(ctx context.Context) ([]stores.StoragePath, error) {
 }
 
 func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
-	hostname, err := os.Hostname() // TODO: allow overriding from config
+	hostname, err := os.Hostname()  // TODO: allow overriding from config
 	if err != nil {
 		panic(err)
 	}
+	hostname = hostname + os.Getenv("WORKER_OVERRIDE_ID")
 
 	gpus, err := ffi.GetGPUDevices()
 	if err != nil {

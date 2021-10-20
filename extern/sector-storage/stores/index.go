@@ -7,6 +7,7 @@ import (
 	"net/url"
 	gopath "path"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -318,7 +319,13 @@ func (i *Index) StorageFindSector(ctx context.Context, s abi.SectorID, ft storif
 			}
 
 			rl.Path = gopath.Join(rl.Path, ft.String(), storiface.SectorName(s))
-			urls[k] = rl.String()
+			if !strings.Contains(rl.String(), "172.16.0.1") {
+				urls[k] = rl.String()
+				log.Infow("Added URL: %s ", rl.String())
+			} else {
+				log.Info("Ignoring URL that contains 172.16.0.1")
+			}
+
 		}
 
 		out = append(out, SectorStorageInfo{
