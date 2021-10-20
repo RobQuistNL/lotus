@@ -248,7 +248,12 @@ func ConfigCommon(cfg *config.Common, enableLibp2pNode bool) Option {
 			ip := cfg.API.RemoteListenAddress
 
 			var urls stores.URLs
-			urls = append(urls, "http://"+ip+"/remote") // TODO: This makes no assumptions, and probably could...
+			if (ip != "172.16.0.1") {
+				urls = append(urls, "http://"+ip+"/remote") // TODO: This makes no assumptions, and probably could...
+			} else {
+				log.Debugf("Skipping adding url for daemon IP!")
+			}
+
 			return urls, nil
 		}),
 		ApplyIf(func(s *Settings) bool { return s.Base }), // apply only if Base has already been applied
