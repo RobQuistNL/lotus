@@ -397,6 +397,11 @@ func (sh *scheduler) trySched() {
 					continue
 				}
 
+				if ((task.taskType == sealtasks.TTFetch || task.taskType == sealtasks.TTFinalize) && worker.info.Hostname == "daemon-main") {
+					log.Debugw("skipping fetch or finalize task for daemon-main", "worker", windowRequest.worker)
+					continue
+				}
+
 				rpcCtx, cancel := context.WithTimeout(task.ctx, SelectorTimeout)
 				ok, err := task.sel.Ok(rpcCtx, task.taskType, task.sector.ProofType, worker)
 				cancel()
@@ -446,7 +451,7 @@ func (sh *scheduler) trySched() {
 
 	wg.Wait()
 
-	log.Debugf("SCHED windows: %+v", windows)
+	//log.Debugf("SCHED windows: %+v", windows)
 	log.Debugf("SCHED Acceptable win: %+v", acceptableWindows)
 
 	// Step 2
