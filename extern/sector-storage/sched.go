@@ -351,7 +351,7 @@ func (sh *scheduler) trySched() {
 	windowsLen := len(sh.openWindows)
 	queueLen := sh.schedQueue.Len()
 
-	log.Debugf("SCHED %d queued; %d open windows", queueLen, windowsLen)
+	//log.Debugf("SCHED %d queued; %d open windows", queueLen, windowsLen)
 
 	if windowsLen == 0 || queueLen == 0 {
 		// nothing to schedule on
@@ -447,7 +447,7 @@ func (sh *scheduler) trySched() {
 	wg.Wait()
 
 	//log.Debugf("SCHED windows: %+v", windows)
-	log.Debugf("SCHED Acceptable win: %+v", acceptableWindows)
+	//log.Debugf("SCHED Acceptable win: %+v", acceptableWindows)
 
 	// Step 2
 	scheduled := 0
@@ -470,7 +470,7 @@ func (sh *scheduler) trySched() {
 			}
 
 			if ((task.taskType == sealtasks.TTFetch || task.taskType == sealtasks.TTFinalize) && info.Hostname == "daemon-main") {
-				log.Debug("skipping fetch or finalize task for daemon-main")
+				log.Debugf("skipping fetch or finalize task for daemon-main")
 				continue
 			}
 

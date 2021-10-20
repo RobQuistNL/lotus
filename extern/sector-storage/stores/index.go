@@ -160,7 +160,7 @@ func (i *Index) StorageAttach(ctx context.Context, si StorageInfo, st fsutil.FsS
 				}
 
 				if strings.Contains(u, "172.16.0.1") {
-					log.Info("Ignoring URL that contains 172.16.0.1")
+					log.Debugf("Ignoring URL that contains 172.16.0.1")
 					continue uloop
 				}
 				//	log.Infow("Added URL: %s ", rl.String())
