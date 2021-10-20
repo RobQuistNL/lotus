@@ -493,14 +493,9 @@ func (m *Manager) SealCommit2(ctx context.Context, sector storage.SectorRef, pha
 		return out, waitErr
 	}
 
-	if err := m.index.StorageLock(ctx, sector.ID, storiface.FTNone, storiface.FTSealed|storiface.FTUnsealed|storiface.FTCache); err != nil {
-		return out, xerrors.Errorf("acquiring sector lock: %w", err)
-	}
+	selector := newTaskSelector()
 
-	//selector := newTaskSelector()
-	selector := newExistingSelector(m.index, sector.ID, storiface.FTCache|storiface.FTSealed, false)
-
-	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit2, selector, m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove), func(ctx context.Context, w Worker) error {
+	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit2, selector, schedNop, func(ctx context.Context, w Worker) error {
 		err := m.startWork(ctx, w, wk)(w.SealCommit2(ctx, sector, phase1Out))
 		if err != nil {
 			return err
