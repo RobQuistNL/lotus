@@ -30,6 +30,27 @@ var SkippedHeartbeatThresh = HeartbeatInterval * 5
 //  filesystem, local or networked / shared by multiple machines
 type ID string
 
+const IDSep = "."
+
+type IDList []ID
+
+func (il IDList) String() string {
+	l := make([]string, len(il))
+	for i, id := range il {
+		l[i] = string(id)
+	}
+	return strings.Join(l, IDSep)
+}
+
+func ParseIDList(s string) IDList {
+	strs := strings.Split(s, IDSep)
+	out := make([]ID, len(strs))
+	for i, str := range strs {
+		out[i] = ID(str)
+	}
+	return out
+}
+
 type Group = string
 
 type StorageInfo struct {
