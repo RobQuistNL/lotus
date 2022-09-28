@@ -561,7 +561,12 @@ var clientRetrieveLsCmd = &cli.Command{
 			}
 
 			for _, link := range links {
-				fmt.Printf("%s %s\t%d\n", link.Cid, link.Name, link.Size)
+				val, err := json.Marshal(link)
+				if (err != nil) {
+					fmt.Printf("No Json: %s %s\t%d\n", link.Cid, link.Name, link.Size)
+				} else {
+					fmt.Printf("%s\n", val)
+				}
 			}
 		} else {
 			jsel := lapi.Selector(fmt.Sprintf(`{"R":{"l":{"depth":%d},":>":{"a":{">":{"|":[{"@":{}},{".":{}}]}}}}}`, cctx.Int("depth")))
