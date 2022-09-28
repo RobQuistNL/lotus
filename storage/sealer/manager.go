@@ -179,7 +179,8 @@ func New(ctx context.Context, lstor *paths.Local, stor paths.Store, ls paths.Loc
 	go m.sched.runSched()
 
 	localTasks := []sealtasks.TaskType{
-		sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1, sealtasks.TTFinalize, sealtasks.TTFetch, sealtasks.TTFinalizeReplicaUpdate,
+		// Disable all tasks for the miner instance (we only use workers)
+		//sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1, sealtasks.TTFinalize, sealtasks.TTFetch, sealtasks.TTFinalizeReplicaUpdate,
 	}
 	if sc.AllowAddPiece {
 		localTasks = append(localTasks, sealtasks.TTAddPiece, sealtasks.TTDataCid)
@@ -588,21 +589,15 @@ func (m *Manager) SealCommit1(ctx context.Context, sector storiface.SectorRef, t
 	// generally very cheap / fast, and transferring data is not worth the effort
 	selector := newExistingSelector(m.index, sector.ID, storiface.FTCache|storiface.FTSealed, false)
 
-	err = m.sched.Schedule(
-		ctx,
-		sector,
-		sealtasks.TTCommit1,
-		selector,
-		m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove),
-		func(ctx context.Context, w Worker) error {
-			err := m.startWork(ctx, w, wk)(w.SealCommit1(ctx, sector, ticket, seed, pieces, cids))
-			if err != nil {
-				return err
-			}
+	err = m.sched.Schedule(ctx, sector, sealtasks.TTCommit1, selector, m.schedFetch(sector, storiface.FTCache|storiface.FTSealed, storiface.PathSealing, storiface.AcquireMove), func(ctx context.Context, w Worker) error {
+		err := m.startWork(ctx, w, wk)(w.SealCommit1(ctx, sector, ticket, seed, pieces, cids))
+		if err != nil {
+			return err
+		}
 
-			waitRes()
-			return nil
-		})
+		waitRes()
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}

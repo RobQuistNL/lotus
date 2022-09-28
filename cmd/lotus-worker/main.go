@@ -242,6 +242,11 @@ var runCmd = &cli.Command{
 			Value:   false,
 			EnvVars: []string{"LOTUS_WORKER_NO_DEFAULT"},
 		},
+		&cli.BoolFlag{
+			Name:  "finalize",
+			Usage: "enable finalize tasks",
+			Value: false,
+		},
 		&cli.IntFlag{
 			Name:    "parallel-fetch-limit",
 			Usage:   "maximum fetch operations to run in parallel",
@@ -363,38 +368,45 @@ var runCmd = &cli.Command{
 		}
 
 		if workerType == "" {
-			taskTypes = append(taskTypes, sealtasks.TTFetch, sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1, sealtasks.TTFinalize, sealtasks.TTFinalizeReplicaUpdate)
+			workerType = sealtasks.WorkerSealing
+			taskTypes = append(taskTypes, sealtasks.TTFetch) // All workers should always have fetch
 
-			if !cctx.Bool("no-default") {
-				workerType = sealtasks.WorkerSealing
+			if (cctx.IsSet("addpiece")) && cctx.Bool("addpiece") {
+				taskTypes = append(taskTypes, sealtasks.TTAddPiece, sealtasks.TTDataCid)
 			}
-		}
+			if (cctx.IsSet("precommit1")) && cctx.Bool("precommit1") {
+				taskTypes = append(taskTypes, sealtasks.TTPreCommit1)
+			}
+			if (cctx.IsSet("unseal")) && cctx.Bool("unseal") {
+				taskTypes = append(taskTypes, sealtasks.TTUnseal)
+			}
 
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("addpiece")) && cctx.Bool("addpiece") {
-			taskTypes = append(taskTypes, sealtasks.TTAddPiece, sealtasks.TTDataCid)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("precommit1")) && cctx.Bool("precommit1") {
-			taskTypes = append(taskTypes, sealtasks.TTPreCommit1)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("unseal")) && cctx.Bool("unseal") {
-			taskTypes = append(taskTypes, sealtasks.TTUnseal)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("precommit2")) && cctx.Bool("precommit2") {
-			taskTypes = append(taskTypes, sealtasks.TTPreCommit2)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("commit")) && cctx.Bool("commit") {
-			needParams = true
-			taskTypes = append(taskTypes, sealtasks.TTCommit2)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("replica-update")) && cctx.Bool("replica-update") {
-			taskTypes = append(taskTypes, sealtasks.TTReplicaUpdate)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("prove-replica-update2")) && cctx.Bool("prove-replica-update2") {
-			needParams = true
-			taskTypes = append(taskTypes, sealtasks.TTProveReplicaUpdate2)
-		}
-		if (workerType == sealtasks.WorkerSealing || cctx.IsSet("regen-sector-key")) && cctx.Bool("regen-sector-key") {
-			taskTypes = append(taskTypes, sealtasks.TTRegenSectorKey)
+			//pc2 and c2 always also get C1 & PRU1
+			hasCommit1 := false
+			if cctx.IsSet("precommit2") && cctx.Bool("precommit2") {
+				taskTypes = append(taskTypes, sealtasks.TTPreCommit2)
+				taskTypes = append(taskTypes, sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1)
+				hasCommit1 = true
+			}
+			if cctx.IsSet("commit") && cctx.Bool("commit") {
+				taskTypes = append(taskTypes, sealtasks.TTCommit2)
+				if (!hasCommit1) {
+					taskTypes = append(taskTypes, sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1)
+				}
+			}
+
+			if cctx.IsSet("replica-update") && cctx.Bool("replica-update") {
+				taskTypes = append(taskTypes, sealtasks.TTReplicaUpdate)
+			}
+			if cctx.IsSet("prove-replica-update2") && cctx.Bool("prove-replica-update2") {
+				taskTypes = append(taskTypes, sealtasks.TTProveReplicaUpdate2)
+			}
+			if cctx.IsSet("regen-sector-key") && cctx.Bool("regen-sector-key") {
+				taskTypes = append(taskTypes, sealtasks.TTRegenSectorKey)
+			}
+			if cctx.IsSet("finalize") && cctx.Bool("finalize") {
+				taskTypes = append(taskTypes, sealtasks.TTFinalize, sealtasks.TTFinalizeReplicaUpdate)
+			}
 		}
 
 		if cctx.Bool("no-default") && workerType == "" {

@@ -1,0 +1,22 @@
+--- corecounts.rs	2022-09-14 12:27:54.303975301 +0200
++++ corecounts.rs	2022-09-14 12:29:27.653060671 +0200
+@@ -11,6 +11,10 @@
+
+ fn cuda_cores() -> HashMap<String, usize> {
+     let mut core_counts: HashMap<String, usize> = vec![
++        ("gfx908:sramecc+:xnack-".to_string(), 15360),
++        ("gfx908:sramecc-:xnack-".to_string(), 15360),
++        ("gfx908:sramecc-:xnack+".to_string(), 15360),
++        ("gfx908:sramecc+:xnack+".to_string(), 15360),
+         // AMD
+         ("gfx1010".to_string(), 2560),
+         // This value was chosen to give (approximately) empirically best performance for a Radeon Pro VII.
+@@ -60,6 +64,8 @@
+     .into_iter()
+     .collect();
+
++    info!("Contains manual gpuchange");
++
+     if let Ok(var) = env::var("RUST_GPU_TOOLS_CUSTOM_GPU") {
+         for card in var.split(',') {
+             let split = card.rsplitn(2, ':').collect::<Vec<_>>();

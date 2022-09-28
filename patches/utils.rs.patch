@@ -1,0 +1,22 @@
+--- utils.rs        2022-07-15 17:42:20.491941823 +0200
++++ utils.rs 2022-07-15 17:35:58.539310932 +0200
+@@ -10,6 +10,10 @@
+             ("gfx1010".to_string(), 2560),
+             // This value was chosen to give (approximately) empirically best performance for a Radeon Pro VII.
+             ("gfx906".to_string(), 7400),
++            ("gfx908:sramecc+:xnack-".to_string(), 15360),
++            ("gfx908:sramecc-:xnack-".to_string(), 15360),
++            ("gfx908:sramecc-:xnack+".to_string(), 15360),
++            ("gfx908:sramecc+:xnack+".to_string(), 15360),
+
+             // NVIDIA
+             ("Quadro RTX 6000".to_string(), 4608),
+@@ -39,7 +43,7 @@
+             ("GeForce GTX 1650 SUPER".to_string(), 1280),
+             ("GeForce GTX 1650".to_string(), 896),
+         ].into_iter().collect();
+-
++       info!("Contains manual gpuchange");
+         if let Ok(var) = env::var("BELLMAN_CUSTOM_GPU") {
+             for card in var.split(',') {
+                 let splitted = card.split(':').collect::<Vec<_>>();

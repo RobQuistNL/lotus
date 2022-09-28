@@ -178,7 +178,7 @@ func (i *Index) StorageAttach(ctx context.Context, si storiface.StorageInfo, st 
 	i.lk.Lock()
 	defer i.lk.Unlock()
 
-	log.Infof("Attatching new sector storage: %s", si.ID)
+	log.Infof("New sector storage: %s", si.ID)
 
 	if _, ok := i.stores[si.ID]; ok {
 		for _, u := range si.URLs {
@@ -193,17 +193,6 @@ func (i *Index) StorageAttach(ctx context.Context, si storiface.StorageInfo, st 
 				if u == l {
 					continue uloop
 				}
-
-				//if strings.Contains(u, "172.16.0.1") {
-				//	log.Debugf("Ignoring URL that contains 172.16.0.1")
-				//	continue uloop
-				//}
-				//	log.Infow("Added URL: %s ", rl.String())
-				//} else {
-				//	log.Info("Ignoring URL that contains 172.16.0.1")
-				//}
-
-
 			}
 
 			i.stores[si.ID].info.URLs = append(i.stores[si.ID].info.URLs, u)
@@ -459,14 +448,8 @@ func (i *Index) StorageFindSector(ctx context.Context, s abi.SectorID, ft storif
 			}
 
 			rl.Path = gopath.Join(rl.Path, ft.String(), storiface.SectorName(s))
-			//if !strings.Contains(rl.String(), "172.16.0.1") {
 			urls[k] = rl.String()
 			burls[k] = u
-			//	log.Infow("Added URL: %s ", rl.String())
-			//} else {
-			//	log.Info("Ignoring URL that contains 172.16.0.1")
-			//}
-
 		}
 
 		if allowTo != nil && len(st.info.AllowTo) > 0 {
