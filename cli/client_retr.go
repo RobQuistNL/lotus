@@ -291,7 +291,7 @@ Examples:
 	}, retrFlagsCommon...),
 	Action: func(cctx *cli.Context) error {
 		if cctx.NArg() != 2 {
-			return ShowHelp(cctx, fmt.Errorf("incorrect number of arguments"))
+			return IncorrectNumArgs(cctx)
 		}
 
 		if cctx.Bool("car-export-merkle-proof") {
@@ -316,6 +316,9 @@ Examples:
 		eref, err := retrieve(ctx, cctx, fapi, s, afmt.Printf)
 		if err != nil {
 			return err
+		}
+		if eref == nil {
+			return xerrors.Errorf("failed to find providers")
 		}
 
 		if s != nil {
@@ -404,7 +407,7 @@ var clientRetrieveCatCmd = &cli.Command{
 	}, retrFlagsCommon...),
 	Action: func(cctx *cli.Context) error {
 		if cctx.NArg() != 1 {
-			return ShowHelp(cctx, fmt.Errorf("incorrect number of arguments"))
+			return IncorrectNumArgs(cctx)
 		}
 
 		ainfo, err := GetAPIInfo(cctx, repo.FullNode)
@@ -483,7 +486,7 @@ var clientRetrieveLsCmd = &cli.Command{
 	}, retrFlagsCommon...),
 	Action: func(cctx *cli.Context) error {
 		if cctx.NArg() != 1 {
-			return ShowHelp(cctx, fmt.Errorf("incorrect number of arguments"))
+			return IncorrectNumArgs(cctx)
 		}
 
 		ainfo, err := GetAPIInfo(cctx, repo.FullNode)
