@@ -17,13 +17,13 @@ export RUST_LOG=debug
 TOPATCH=~/.cargo/registry/src/github.com-1ecc6299db9ec823/rust-gpu-tools-0.6.1/src/corecounts.rs
 if [ ! -f "$TOPATCH" ]; then
     echo "$TOPATCH does not exist, making first simple build and cleaning to fetch deps"
-    make all lotus-bench
+    make all lotus-bench lotus-shed
     make clean
 fi
 
    #diff -u OriginalFile UpdatedFile > PatchFile
 patch -N -u $TOPATCH -i ./patches/corecounts.rs.patch
-make $1 lotus-bench
+make $1 lotus-bench lotus-shed
 
 echo "Done - copying over to server directory"
 
@@ -36,3 +36,4 @@ cp lotus /var/www/lotus-binaries/lotus-$VERSION-$NETWORK
 cp lotus-miner /var/www/lotus-binaries/lotus-miner-$VERSION-$NETWORK
 cp lotus-worker /var/www/lotus-binaries/lotus-worker-$VERSION-$NETWORK
 cp lotus-bench /var/www/lotus-binaries/lotus-bench-$VERSION-$NETWORK
+cp lotus-shed /var/www/lotus-binaries/lotus-shed-$VERSION-$NETWORK
