@@ -36,7 +36,7 @@ func (a *AssignerCommon) TrySched(sh *Scheduler) {
 	windowsLen := len(sh.OpenWindows)
 	queueLen := sh.SchedQueue.Len()
 
-	log.Debugf("SCHED %d queued; %d open windows", queueLen, windowsLen)
+	//log.Debugf("SCHED %d queued; %d open windows", queueLen, windowsLen)
 
 	if windowsLen == 0 || queueLen == 0 {
 		// nothing to schedule on
@@ -148,8 +148,8 @@ func (a *AssignerCommon) TrySched(sh *Scheduler) {
 
 	wg.Wait()
 
-	log.Debugf("SCHED windows: %+v", windows)
-	log.Debugf("SCHED Acceptable win: %+v", acceptableWindows)
+	//log.Debugf("SCHED windows: %+v", windows)
+	//log.Debugf("SCHED Acceptable win: %+v", acceptableWindows)
 
 	// Step 2
 	scheduled := a.WindowSel(sh, queueLen, acceptableWindows, windows)

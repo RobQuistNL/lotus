@@ -32,7 +32,7 @@ func SpreadWS(sh *Scheduler, queueLen int, acceptableWindows [][]int, windows []
 
 			res := w.Info.Resources.ResourceSpec(task.Sector.ProofType, task.TaskType)
 
-			log.Debugf("SCHED try assign sqi:%d sector %d to window %d (awi:%d)", sqi, task.Sector.ID.Number, wnd, i)
+			//log.Debugf("SCHED try assign sqi:%d sector %d to window %d (awi:%d)", sqi, task.Sector.ID.Number, wnd, i)
 
 			if !windows[wnd].Allocated.CanHandleRequest(task.SealTask(), res, wid, "schedAssign", w.Info) {
 				continue
