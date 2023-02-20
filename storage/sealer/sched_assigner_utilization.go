@@ -32,7 +32,7 @@ func LowestUtilizationWS(sh *Scheduler, queueLen int, acceptableWindows [][]int,
 
 			res := w.Info.Resources.ResourceSpec(task.Sector.ProofType, task.TaskType)
 
-			log.Debugf("SCHED try assign sqi:%d sector %d to window %d (awi:%d)", sqi, task.Sector.ID.Number, wnd, i)
+			//log.Debugf("SCHED try assign sqi:%d sector %d to window %d (awi:%d)", sqi, task.Sector.ID.Number, wnd, i)
 
 			// TODO: allow bigger windows
 			if !windows[wnd].Allocated.CanHandleRequest(task.SealTask(), res, wid, "schedAssign", w.Info) {
@@ -73,13 +73,13 @@ func LowestUtilizationWS(sh *Scheduler, queueLen int, acceptableWindows [][]int,
 			continue
 		}
 
-		log.Debugw("SCHED ASSIGNED",
-			"sqi", sqi,
-			"sector", task.Sector.ID.Number,
-			"task", task.TaskType,
-			"window", selectedWindow,
-			"worker", bestWid,
-			"utilization", bestUtilization)
+		//log.Debugw("SCHED ASSIGNED",
+		//	"sqi", sqi,
+		//	"sector", task.Sector.ID.Number,
+		//	"task", task.TaskType,
+		//	"window", selectedWindow,
+		//	"worker", bestWid,
+		//	"utilization", bestUtilization)
 
 		workerUtil[bestWid] += windows[selectedWindow].Allocated.Add(task.SealTask(), info.Resources, needRes)
 		windows[selectedWindow].Todo = append(windows[selectedWindow].Todo, task)
