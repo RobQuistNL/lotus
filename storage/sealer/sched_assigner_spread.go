@@ -26,7 +26,7 @@ func SpreadWS(sh *Scheduler, queueLen int, acceptableWindows [][]int, windows []
 		var bestWid storiface.WorkerID
 		bestAssigned := math.MaxInt // smaller = better
 
-		for i, wnd := range acceptableWindows[task.IndexHeap] {
+		for _, wnd := range acceptableWindows[task.IndexHeap] {
 			wid := sh.OpenWindows[wnd].Worker
 			w := sh.Workers[wid]
 

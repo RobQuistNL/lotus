@@ -26,7 +26,7 @@ func LowestUtilizationWS(sh *Scheduler, queueLen int, acceptableWindows [][]int,
 		var bestWid storiface.WorkerID
 		bestUtilization := math.MaxFloat64 // smaller = better
 
-		for i, wnd := range acceptableWindows[task.IndexHeap] {
+		for _, wnd := range acceptableWindows[task.IndexHeap] {
 			wid := sh.OpenWindows[wnd].Worker
 			w := sh.Workers[wid]
 
