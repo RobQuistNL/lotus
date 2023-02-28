@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 MAINTAINER robquistnl <support@dukesoft.nl>
 
-RUN apt-get update && apt-get install -y build-essential bzr curl ca-certificates llvm clang gcc git hwloc jq libhwloc-dev make llvm numactl ocl-icd-opencl-dev pkg-config rsync tar wget zip mesa-opencl-icd
+RUN apt-get update && apt-get install -y build-essential bzr curl ca-certificates llvm clang gcc git hwloc jq libhwloc-dev make llvm numactl ocl-icd-opencl-dev pkg-config rsync tar wget zip mesa-opencl-icd iputils-ping telnet iproute2
 
 # Create the home directory and switch to a non-privileged user.
 ENV HOME_PATH /data

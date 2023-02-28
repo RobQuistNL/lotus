@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  miner-daemon:
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus-network/miner:/data'
+      - '/home/aorus/lotus:/lotus-binaries'
+    environment:
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.11.2/tcp/1234/http
+      LOTUS_API_REMOTELISTENADDRESS: /ip4/172.16.100.22/tcp/11337
+      LOTUS_LIBP2P_LISTENADDRESSES: '/ip4/0.0.0.0/tcp/11337'
+      LOTUS_LIBP2P_ANNOUNCEADDRESSES: '/ip4/172.16.100.22/tcp/11337'
+      LOTUS_PATH: /data/daemon
+    command: sh -c "/lotus-binaries/lotus daemon --genesis=/data/devgen.car"
+    healthcheck:
+      test: [ "CMD", "/lotus-binaries/lotus", "sync", "status" ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      miner:
+        ipv4_address: 172.16.11.2
+      external:
+        ipv4_address: 172.16.100.22
+
+networks:
+  miner:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.11.0/24"
+  external:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.100.0/24"

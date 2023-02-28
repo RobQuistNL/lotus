@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+  genesis-daemon:
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus-network/genesis:/data'
+      - '/home/aorus/lotus:/lotus-binaries'
+    environment:
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.10.2/tcp/1234/http
+      LOTUS_PATH: /data/daemon
+    command: sh -c "/lotus-binaries/lotus-seed pre-seal --sector-size 2KiB --num-sectors 2 && /lotus-binaries/lotus-seed genesis new /data/localnet.json && mv ~/.genesis-sectors/* /data/sectors/ && /lotus-binaries/lotus-seed genesis add-miner /data/localnet.json /data/sectors/pre-seal-t01000.json && /lotus-binaries/lotus daemon --lotus-make-genesis=/data/devgen.car --genesis-template=/data/localnet.json --bootstrap=false"
+    healthcheck:
+      test: [ "CMD", "/lotus-binaries/lotus", "sync", "status" ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      genesis:
+        ipv4_address: 172.16.10.2
+
+  genesis-miner:
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    depends_on:
+      genesis-daemon:
+        condition: service_healthy
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus-network/genesis:/data'
+      - '/home/aorus/lotus:/lotus-binaries'
+    environment:
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.10.3/tcp/2345/http
+      LOTUS_MINER_PATH: /data/miner
+    command: sh -c "export FULLNODE_API_INFO=`cat /data/daemon/token`:/ip4/172.16.10.2/tcp/1234; /lotus-binaries/lotus wallet import --as-default /data/sectors/pre-seal-t01000.key && /lotus-binaries/lotus-miner init --genesis-miner --actor=t01000 --sector-size=2KiB --pre-sealed-sectors=/data/sectors --pre-sealed-metadata=/data/sectors/pre-seal-t01000.json --nosync"
+    networks:
+      genesis:
+        ipv4_address: 172.16.10.3
+
+networks:
+  genesis:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.10.0/24"
