@@ -1,0 +1,51 @@
+version: '3.1'
+
+services:
+  genesis-daemon:
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus-network/genesis:/data'
+      - '/home/aorus/lotus:/lotus-binaries'
+    environment:
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.10.2/tcp/1234/http
+      LOTUS_PATH: /data/daemon
+      LOTUS_MINER_PATH: /data/miner
+    command: sh -c "/lotus-binaries/lotus daemon --lotus-make-genesis=devgen.car --genesis-template=localnet.json --bootstrap=false"
+    healthcheck:
+      test: [ "CMD", "/lotus-binaries/lotus", "sync", "status" ]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 1s
+    networks:
+      genesis:
+        ipv4_address: 172.16.10.2
+
+  genesis-miner:
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    depends_on:
+      genesis-daemon:
+        condition: service_healthy
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus-network/genesis:/data'
+      - '/home/aorus/lotus:/lotus-binaries'
+    environment:
+      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0._hK6aVi2PpV-91PK0l0DPTy9_cNpg4at9nn-AVfUe8c:/ip4/172.16.10.2/tcp/1234
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.10.3/tcp/2345/http
+      LOTUS_PATH: /data/daemon
+      LOTUS_MINER_PATH: /data/miner
+    command: sh -c "/lotus-binaries/lotus-miner run --nosync"
+    networks:
+      genesis:
+        ipv4_address: 172.16.10.3
+
+networks:
+  genesis:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.10.0/24"

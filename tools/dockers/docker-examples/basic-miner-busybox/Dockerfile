@@ -1,9 +1,9 @@
-FROM golang:1.14.1-buster
-MAINTAINER ldoublewood <ldoublewood@gmail.com>
+FROM golang:1.19.1-buster
+MAINTAINER robquistnl <support@dukesoft.nl>
 
 ENV SRC_DIR /lotus
 
-RUN apt-get update && apt-get install -y ca-certificates llvm clang mesa-opencl-icd ocl-icd-opencl-dev jq
+RUN apt-get update && apt-get install -y ca-certificates llvm clang mesa-opencl-icd ocl-icd-opencl-dev jq git hwloc jq libhwloc-dev make llvm numactl ocl-icd-opencl-dev pkg-config rsync tar wget zip mesa-opencl-icd
 
 RUN curl -sSf https://sh.rustup.rs | sh -s -- -y
 
@@ -44,7 +44,7 @@ RUN cd $SRC_DIR \
 
 COPY . $SRC_DIR
 
-ARG MAKE_TARGET=all
+ARG MAKE_TARGET=2k
 
 # Build the thing.
 RUN cd $SRC_DIR \
@@ -63,13 +63,13 @@ COPY --from=0 /tmp/su-exec/su-exec /sbin/su-exec
 COPY --from=0 /tmp/tini /sbin/tini
 COPY --from=0 /etc/ssl/certs /etc/ssl/certs
 
-
 # This shared lib (part of glibc) doesn't seem to be included with busybox.
+COPY --from=0 /lib/x86_64-linux-gnu/libdl-2.28.so /lib/libdl.so.5
 COPY --from=0 /lib/x86_64-linux-gnu/libdl-2.28.so /lib/libdl.so.2
 COPY --from=0 /lib/x86_64-linux-gnu/libutil-2.28.so /lib/libutil.so.1 
 COPY --from=0 /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.0.0 /lib/libOpenCL.so.1
 COPY --from=0 /lib/x86_64-linux-gnu/librt-2.28.so /lib/librt.so.1
-COPY --from=0 /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib/libgcc_s.so.1
+COPY --from=0 /lib/x86_64-linux-gnu/libhwloc.so.5 /lib/libhwloc.so.5
 
 # WS port
 EXPOSE 1234
