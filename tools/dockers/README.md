@@ -17,6 +17,6 @@ sudo docker build -t genesis-daemon -f ./tools/dockers/devnet/genesis-daemon/Doc
 Reset testnet;
 
 ```shell
-sudo rm -rf daemon; sudo rm -rf miner; sudo rm -rf sectors; sudo mkdir -p daemon miner sectors; echo '{"ID": "genesis-storge","Weight": 10,"CanSeal": true, "CanStore": true, "MaxStorage": 0}' | sudo tee -a sectors/sectorstore.json
+sudo rm -rf daemon; sudo rm -rf miner; sudo rm -rf sectors; sudo mkdir -p daemon miner sectors;
 ```
 
