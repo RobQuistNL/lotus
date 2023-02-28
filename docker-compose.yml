@@ -11,14 +11,14 @@ services:
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.10.2/tcp/1234/http
       LOTUS_PATH: /data/daemon
-      LOTUS_MINER_PATH: /data/miner
-    command: sh -c "/lotus-binaries/lotus daemon --lotus-make-genesis=devgen.car --genesis-template=localnet.json --bootstrap=false"
+    command: sh -c "/lotus-binaries/lotus-seed pre-seal --sector-size 2KiB --num-sectors 2 && /lotus-binaries/lotus-seed genesis new /data/localnet.json && mv ~/.genesis-sectors/pre-seal-t01000.* /data/sectors/ && /lotus-binaries/lotus-seed genesis add-miner /data/localnet.json /data/sectors/pre-seal-t01000.json && /lotus-binaries/lotus daemon --lotus-make-genesis=/data/devgen.car --genesis-template=/data/localnet.json --bootstrap=false"
+    #command: sh -c "/lotus-binaries/lotus daemon --lotus-make-genesis=/data/devgen.car --genesis-template=/data/localnet.json --bootstrap=false"
     healthcheck:
       test: [ "CMD", "/lotus-binaries/lotus", "sync", "status" ]
       interval: 2s
       timeout: 5s
       retries: 20
-      start_period: 1s
+      start_period: 10s
     networks:
       genesis:
         ipv4_address: 172.16.10.2
@@ -34,11 +34,11 @@ services:
       - '/home/aorus/lotus-network/genesis:/data'
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
-      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0._hK6aVi2PpV-91PK0l0DPTy9_cNpg4at9nn-AVfUe8c:/ip4/172.16.10.2/tcp/1234
+      #FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.GY0NdhqTMX-f-90yyQvOIhIVZgOEpeLus2E7nEAzDUk:/ip4/172.16.10.2/tcp/1234
       LOTUS_API_LISTENADDRESS: /ip4/172.16.10.3/tcp/2345/http
-      LOTUS_PATH: /data/daemon
       LOTUS_MINER_PATH: /data/miner
-    command: sh -c "/lotus-binaries/lotus-miner run --nosync"
+    command: sh -c "export FULLNODE_API_INFO=`cat /data/daemon/token`:/ip4/172.16.10.2/tcp/1234; /lotus-binaries/lotus wallet import --as-default /data/sectors/pre-seal-t01000.key && /lotus-binaries/lotus-miner init --genesis-miner --actor=t01000 --sector-size=2KiB --pre-sealed-sectors=/data/sectors --pre-sealed-metadata=/data/sectors/pre-seal-t01000.json --nosync"
+    #command: sh -c "export FULLNODE_API_INFO=`cat /data/daemon/token`:/ip4/172.16.10.2/tcp/1234; /lotus-binaries/lotus-miner run --nosync"
     networks:
       genesis:
         ipv4_address: 172.16.10.3

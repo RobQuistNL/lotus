@@ -7,4 +7,16 @@ In [docker-examples/](docker-examples/) are community-contributed Docker and Doc
 
 Install docker as per https://docs.docker.com/engine/install/ubuntu/
 
-Setup a 
+Build new image;
+
+```shell
+cd /home/aorus/lotus
+sudo docker build -t genesis-daemon -f ./tools/dockers/devnet/genesis-daemon/Dockerfile .
+```
+
+Reset testnet;
+
+```shell
+sudo rm -rf daemon; sudo rm -rf miner; sudo rm -rf sectors; sudo mkdir -p daemon miner sectors; echo '{"ID": "genesis-storge","Weight": 10,"CanSeal": true, "CanStore": true, "MaxStorage": 0}' | sudo tee -a sectors/sectorstore.json
+```
+
