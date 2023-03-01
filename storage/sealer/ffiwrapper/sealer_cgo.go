@@ -57,6 +57,7 @@ func (sb *Sealer) NewSector(ctx context.Context, sector storiface.SectorRef) err
 }
 
 func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {
+	log.Infof("Running DataCid using a reader (DataCid internal)")
 	origPieceData := pieceData
 	defer func() {
 		closer, ok := origPieceData.(io.Closer)
@@ -186,6 +187,26 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 		Size:     pieceSize.Padded(),
 		PieceCID: pieceCID,
 	}, nil
+}
+
+func (sb *Sealer) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
+	log.Infof("Running DataCid by path using %s", pieceDataPath)
+	f, err := os.OpenFile(pieceDataPath, os.O_RDONLY, 0)
+	if err != nil {
+		return abi.PieceInfo{}, xerrors.Errorf("failed to open file by path for datacid computation: %w", err)
+	}
+
+	var r io.Reader
+	r = f
+
+	st, err := f.Stat()
+	if err != nil {
+		return abi.PieceInfo{}, xerrors.Errorf("stat: %w", err)
+	}
+
+	log.Infof("Actually opened file! %s (%+v)", pieceDataPath, uint64(st.Size()))
+
+	return sb.DataCid(ctx, pieceSize, r)
 }
 
 func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, existingPieceSizes []abi.UnpaddedPieceSize, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {

@@ -149,7 +149,7 @@ func New(ctx context.Context, lstor *paths.Local, stor paths.Store, ls paths.Loc
 		localTasks = append(localTasks, sealtasks.TTDownloadSector)
 	}
 	if sc.AllowAddPiece {
-		localTasks = append(localTasks, sealtasks.TTAddPiece, sealtasks.TTDataCid)
+		localTasks = append(localTasks, sealtasks.TTAddPiece, sealtasks.TTDataCid, sealtasks.TTDataCidByPath)
 	}
 	if sc.AllowPreCommit1 {
 		localTasks = append(localTasks, sealtasks.TTPreCommit1)
@@ -391,6 +391,27 @@ func (m *Manager) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	var out abi.PieceInfo
 	err := m.sched.Schedule(ctx, storiface.NoSectorRef, sealtasks.TTDataCid, selector, schedNop, func(ctx context.Context, w Worker) error {
 		p, err := m.waitSimpleCall(ctx)(w.DataCid(ctx, pieceSize, pieceData))
+		if err != nil {
+			return err
+		}
+		if p != nil {
+			out = p.(abi.PieceInfo)
+		}
+		return nil
+	})
+
+	return out, err
+}
+
+func (m *Manager) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	selector := newTaskSelector()
+
+	var out abi.PieceInfo
+	err := m.sched.Schedule(ctx, storiface.NoSectorRef, sealtasks.TTDataCidByPath, selector, schedNop, func(ctx context.Context, w Worker) error {
+		p, err := m.waitSimpleCall(ctx)(w.DataCidByPath(ctx, pieceSize, pieceDataPath))
 		if err != nil {
 			return err
 		}

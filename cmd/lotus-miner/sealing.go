@@ -38,6 +38,7 @@ var sealingCmd = &cli.Command{
 		sealingSchedDiagCmd,
 		sealingAbortCmd,
 		sealingDataCidCmd,
+		sealingDataCidByPathCmd,
 	},
 }
 
@@ -501,6 +502,81 @@ var sealingDataCidCmd = &cli.Command{
 		}
 
 		pc, err := minerApi.ComputeDataCid(ctx, psize.Unpadded(), r)
+		if err != nil {
+			return xerrors.Errorf("computing data CID: %w", err)
+		}
+
+		fmt.Println(pc.PieceCID, " ", pc.Size)
+		return nil
+	},
+}
+
+
+var sealingDataCidByPathCmd = &cli.Command{
+	Name:      "data-cid-by-path",
+	Usage:     "Compute data CID using workers, by absolute filepath",
+	ArgsUsage: "filepath <padded piece size>",
+	Flags: []cli.Flag{
+		&cli.Uint64Flag{
+			Name:  "file-size",
+			Usage: "real file size",
+		},
+	},
+	Action: func(cctx *cli.Context) error {
+		if cctx.NArg() < 1 || cctx.NArg() > 2 {
+			return lcli.ShowHelp(cctx, xerrors.Errorf("expected 1 or 2 arguments"))
+		}
+
+		minerApi, closer, err := lcli.GetStorageMinerAPI(cctx)
+		if err != nil {
+			return err
+		}
+		defer closer()
+
+		ctx := lcli.ReqContext(cctx)
+
+		//var r io.Reader
+		sz := cctx.Uint64("file-size")
+
+
+		p, err := homedir.Expand(cctx.Args().First())
+		if err != nil {
+			return xerrors.Errorf("expanding path: %w", err)
+		}
+
+		f, err := os.OpenFile(p, os.O_RDONLY, 0)
+		if err != nil {
+			return xerrors.Errorf("opening source file: %w", err)
+		}
+
+		if !cctx.IsSet("file-size") {
+			st, err := f.Stat()
+			if err != nil {
+				return xerrors.Errorf("stat: %w", err)
+			}
+			sz = uint64(st.Size())
+		}
+
+		//r = f
+
+		var psize abi.PaddedPieceSize
+		if cctx.NArg() == 2 {
+			rps, err := humanize.ParseBytes(cctx.Args().Get(1))
+			if err != nil {
+				return xerrors.Errorf("parsing piece size: %w", err)
+			}
+			psize = abi.PaddedPieceSize(rps)
+			if err := psize.Validate(); err != nil {
+				return xerrors.Errorf("checking piece size: %w", err)
+			}
+			if sz > uint64(psize.Unpadded()) {
+				return xerrors.Errorf("file larger than the piece")
+			}
+		} else {
+			psize = padreader.PaddedSize(sz).Padded()
+		}
+
+		pc, err := minerApi.ComputeDataCidByPath(ctx, psize.Unpadded(), p)
 		if err != nil {
 			return xerrors.Errorf("computing data CID: %w", err)
 		}

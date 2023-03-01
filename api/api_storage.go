@@ -66,6 +66,8 @@ type StorageMiner interface {
 
 	ComputeDataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) //perm:admin
 
+	ComputeDataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) //perm:admin
+
 	// Temp api for testing
 	PledgeSector(context.Context) (abi.SectorID, error) //perm:write
 

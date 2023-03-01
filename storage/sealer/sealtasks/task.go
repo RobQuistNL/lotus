@@ -13,12 +13,13 @@ import (
 type TaskType string
 
 const (
-	TTDataCid    TaskType = "seal/v0/datacid"
-	TTAddPiece   TaskType = "seal/v0/addpiece"
-	TTPreCommit1 TaskType = "seal/v0/precommit/1"
-	TTPreCommit2 TaskType = "seal/v0/precommit/2"
-	TTCommit1    TaskType = "seal/v0/commit/1"
-	TTCommit2    TaskType = "seal/v0/commit/2"
+	TTDataCid    	TaskType = "seal/v0/datacid"
+	TTDataCidByPath TaskType = "seal/v0/datacidbypath"
+	TTAddPiece   	TaskType = "seal/v0/addpiece"
+	TTPreCommit1 	TaskType = "seal/v0/precommit/1"
+	TTPreCommit2 	TaskType = "seal/v0/precommit/2"
+	TTCommit1    	TaskType = "seal/v0/commit/1"
+	TTCommit2    	TaskType = "seal/v0/commit/2"
 
 	TTFinalize         TaskType = "seal/v0/finalize"
 	TTFinalizeUnsealed TaskType = "seal/v0/finalizeunsealed"
@@ -39,8 +40,9 @@ const (
 )
 
 var order = map[TaskType]int{
-	TTRegenSectorKey:      11, // least priority
-	TTDataCid:             10,
+	TTRegenSectorKey:      12, // least priority
+	TTDataCid:             11,
+	TTDataCidByPath:	   10,
 	TTAddPiece:            9,
 	TTReplicaUpdate:       8,
 	TTProveReplicaUpdate2: 7,
@@ -61,8 +63,9 @@ var order = map[TaskType]int{
 }
 
 var shortNames = map[TaskType]string{
-	TTDataCid:  "DC",
-	TTAddPiece: "AP",
+	TTDataCid:  	  "DC",
+	TTDataCidByPath:  "DCP",
+	TTAddPiece: 	  "AP",
 
 	TTPreCommit1: "PC1",
 	TTPreCommit2: "PC2",

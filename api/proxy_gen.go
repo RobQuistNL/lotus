@@ -865,6 +865,8 @@ type StorageMinerMethods struct {
 
 	ComputeDataCid func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data) (abi.PieceInfo, error) `perm:"admin"`
 
+	ComputeDataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) `perm:"admin"`
+
 	ComputeProof func(p0 context.Context, p1 []builtinactors.ExtendedSectorInfo, p2 abi.PoStRandomness, p3 abi.ChainEpoch, p4 abinetwork.Version) ([]builtinactors.PoStProof, error) `perm:"read"`
 
 	ComputeWindowPoSt func(p0 context.Context, p1 uint64, p2 types.TipSetKey) ([]miner.SubmitWindowedPoStParams, error) `perm:"admin"`
@@ -1153,6 +1155,8 @@ type WorkerMethods struct {
 	AddPiece func(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data) (storiface.CallID, error) `perm:"admin"`
 
 	DataCid func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data) (storiface.CallID, error) `perm:"admin"`
+
+	DataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) `perm:"admin"`
 
 	DownloadSectorData func(p0 context.Context, p1 storiface.SectorRef, p2 bool, p3 map[storiface.SectorFileType]storiface.SectorLocation) (storiface.CallID, error) `perm:"admin"`
 
@@ -5188,6 +5192,17 @@ func (s *StorageMinerStub) ComputeDataCid(p0 context.Context, p1 abi.UnpaddedPie
 	return *new(abi.PieceInfo), ErrNotSupported
 }
 
+func (s *StorageMinerStruct) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) {
+	if s.Internal.ComputeDataCidByPath == nil {
+		return *new(abi.PieceInfo), ErrNotSupported
+	}
+	return s.Internal.ComputeDataCidByPath(p0, p1, p2)
+}
+
+func (s *StorageMinerStub) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) {
+	return *new(abi.PieceInfo), ErrNotSupported
+}
+
 func (s *StorageMinerStruct) ComputeProof(p0 context.Context, p1 []builtinactors.ExtendedSectorInfo, p2 abi.PoStRandomness, p3 abi.ChainEpoch, p4 abinetwork.Version) ([]builtinactors.PoStProof, error) {
 	if s.Internal.ComputeProof == nil {
 		return *new([]builtinactors.PoStProof), ErrNotSupported
@@ -6659,6 +6674,17 @@ func (s *WorkerStruct) DataCid(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 
 }
 
 func (s *WorkerStub) DataCid(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data) (storiface.CallID, error) {
+	return *new(storiface.CallID), ErrNotSupported
+}
+
+func (s *WorkerStruct) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) {
+	if s.Internal.DataCid == nil {
+		return *new(storiface.CallID), ErrNotSupported
+	}
+	return s.Internal.DataCidByPath(p0, p1, p2)
+}
+
+func (s *WorkerStub) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) {
 	return *new(storiface.CallID), ErrNotSupported
 }
 

@@ -480,6 +480,11 @@ func (sm *StorageMinerAPI) ComputeDataCid(ctx context.Context, pieceSize abi.Unp
 	return sm.StorageMgr.DataCid(ctx, pieceSize, pieceData)
 }
 
+
+func (sm *StorageMinerAPI) ComputeDataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
+	return sm.StorageMgr.DataCidByPath(ctx, pieceSize, pieceDataPath)
+}
+
 func (sm *StorageMinerAPI) WorkerConnect(ctx context.Context, url string) error {
 	w, err := connectRemoteWorker(ctx, sm, url)
 	if err != nil {
