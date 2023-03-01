@@ -1,4 +1,4 @@
-module github.com/filecoin-project/lotus
+module github.com/dukesoft/lotus
 
 go 1.18
 
@@ -49,6 +49,7 @@ require (
 	github.com/filecoin-project/go-statestore v0.2.0
 	github.com/filecoin-project/go-storedcounter v0.1.0
 	github.com/filecoin-project/index-provider v0.9.1
+	github.com/filecoin-project/lotus v1.20.0
 	github.com/filecoin-project/pubsub v1.0.0
 	github.com/filecoin-project/specs-actors v0.9.15
 	github.com/filecoin-project/specs-actors/v2 v2.3.6
@@ -236,7 +237,6 @@ require (
 	github.com/ipfs/go-block-format v0.1.1 // indirect
 	github.com/ipfs/go-filestore v1.2.0 // indirect
 	github.com/ipfs/go-ipfs-cmds v0.7.0 // indirect
-	github.com/ipfs/go-ipfs-config v0.18.0 // indirect
 	github.com/ipfs/go-ipfs-delay v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-posinfo v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-pq v0.0.3 // indirect
@@ -254,7 +254,6 @@ require (
 	github.com/jbenet/goprocess v0.1.4 // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
 	github.com/joeshaw/multierror v0.0.0-20140124173710-69b34d4ec901 // indirect
-	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/kilic/bls12-381 v0.0.0-20200820230200-6b2c19996391 // indirect
@@ -318,7 +317,6 @@ require (
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/twmb/murmur3 v1.1.6 // indirect
-	github.com/uber/jaeger-client-go v2.25.0+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.0.1 // indirect
