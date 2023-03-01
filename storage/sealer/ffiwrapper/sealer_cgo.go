@@ -60,6 +60,7 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	log.Infof("Running DataCid using a reader (DataCid internal)")
 	origPieceData := pieceData
 	defer func() {
+		log.Infof("DCID: Closing reader")
 		closer, ok := origPieceData.(io.Closer)
 		if !ok {
 			log.Warnf("DataCid: cannot close pieceData reader %T because it is not an io.Closer", origPieceData)
@@ -68,8 +69,10 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 		if err := closer.Close(); err != nil {
 			log.Warnw("closing pieceData in DataCid", "error", err)
 		}
+		log.Infof("DCID: Closed reader")
 	}()
 
+	log.Infof("DCID: Creating limitreader")
 	pieceData = io.LimitReader(io.MultiReader(
 		pieceData,
 		nullreader.Reader{},
@@ -92,6 +95,7 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 		throttle <- make([]byte, chunk.Unpadded())
 	}
 
+	log.Infof("DCID: Created chans")
 	for {
 		var read int
 		for rbuf := buf; len(rbuf) > 0; {
@@ -138,6 +142,11 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 					return abi.PieceInfo{}, e.error
 				}
 
+				log.Infof("DCID: All pieces are done? %+v", abi.PieceInfo{
+					Size:     abi.UnpaddedPieceSize(read).Padded(),
+					PieceCID: e.Cid,
+				})
+
 				return abi.PieceInfo{
 					Size:     abi.UnpaddedPieceSize(read).Padded(),
 					PieceCID: e.Cid,
@@ -149,6 +158,7 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	}
 
 	if len(piecePromises) == 1 {
+		log.Infof("DCID: Piecepromise=1")
 		return piecePromises[0]()
 	}
 
@@ -163,6 +173,8 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 		pieceCids[i] = pinfo
 		payloadRoundedBytes += pinfo.Size
 	}
+
+	log.Infof("DCID: Generating unsealedCID")
 
 	pieceCID, err := ffi.GenerateUnsealedCID(maxSizeSpt, pieceCids)
 	if err != nil {
@@ -183,15 +195,20 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 		pieceCID = paddedCid
 	}
 
+	log.Infof("DCID: Done generating pieceCID: %+v", abi.PieceInfo{
+		Size:     pieceSize.Padded(),
+		PieceCID: pieceCID,
+	})
+
 	return abi.PieceInfo{
 		Size:     pieceSize.Padded(),
 		PieceCID: pieceCID,
 	}, nil
 }
 
-func (sb *Sealer) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
-	log.Infof("Running DataCid by path using %s", pieceDataPath)
-	f, err := os.OpenFile(pieceDataPath, os.O_RDONLY, 0)
+func (sb *Sealer) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (abi.PieceInfo, error) {
+	log.Infof("Running DataCid by path using %s", pieceDataPath.Path)
+	f, err := os.OpenFile(pieceDataPath.Path, os.O_RDONLY, 0)
 	if err != nil {
 		return abi.PieceInfo{}, xerrors.Errorf("failed to open file by path for datacid computation: %w", err)
 	}
@@ -204,7 +221,7 @@ func (sb *Sealer) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPiece
 		return abi.PieceInfo{}, xerrors.Errorf("stat: %w", err)
 	}
 
-	log.Infof("Actually opened file! %s (%+v)", pieceDataPath, uint64(st.Size()))
+	log.Infof("Actually opened file! %s (%+v)", pieceDataPath.Path, uint64(st.Size()))
 
 	return sb.DataCid(ctx, pieceSize, r)
 }

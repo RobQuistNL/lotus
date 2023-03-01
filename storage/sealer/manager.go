@@ -403,7 +403,7 @@ func (m *Manager) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	return out, err
 }
 
-func (m *Manager) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
+func (m *Manager) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (abi.PieceInfo, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -1177,6 +1177,10 @@ func (m *Manager) DownloadSectorData(ctx context.Context, sector storiface.Secto
 }
 
 func (m *Manager) ReturnDataCid(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
+	return m.returnResult(ctx, callID, pi, err)
+}
+
+func (m *Manager) ReturnDataCidByPath(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
 	return m.returnResult(ctx, callID, pi, err)
 }
 

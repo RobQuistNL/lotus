@@ -83,7 +83,7 @@ func (mgr *SectorMgr) DataCid(ctx context.Context, size abi.UnpaddedPieceSize, r
 	panic("todo")
 }
 
-func (mgr *SectorMgr) DataCidByPath(ctx context.Context, size abi.UnpaddedPieceSize, r string) (abi.PieceInfo, error) {
+func (mgr *SectorMgr) DataCidByPath(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.LocalPath) (abi.PieceInfo, error) {
 	panic("todo")
 }
 
@@ -554,6 +554,10 @@ func (mgr *SectorMgr) CheckProvable(ctx context.Context, pp abi.RegisteredPoStPr
 var _ storiface.WorkerReturn = &SectorMgr{}
 
 func (mgr *SectorMgr) ReturnDataCid(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
+	panic("not supported")
+}
+
+func (mgr *SectorMgr) ReturnDataCidByPath(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
 	panic("not supported")
 }
 

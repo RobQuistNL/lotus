@@ -511,7 +511,6 @@ var sealingDataCidCmd = &cli.Command{
 	},
 }
 
-
 var sealingDataCidByPathCmd = &cli.Command{
 	Name:      "data-cid-by-path",
 	Usage:     "Compute data CID using workers, by absolute filepath",
@@ -537,7 +536,6 @@ var sealingDataCidByPathCmd = &cli.Command{
 
 		//var r io.Reader
 		sz := cctx.Uint64("file-size")
-
 
 		p, err := homedir.Expand(cctx.Args().First())
 		if err != nil {
@@ -576,7 +574,7 @@ var sealingDataCidByPathCmd = &cli.Command{
 			psize = padreader.PaddedSize(sz).Padded()
 		}
 
-		pc, err := minerApi.ComputeDataCidByPath(ctx, psize.Unpadded(), p)
+		pc, err := minerApi.ComputeDataCidByPath(ctx, psize.Unpadded(), storiface.LocalPath{Path: p})
 		if err != nil {
 			return xerrors.Errorf("computing data CID: %w", err)
 		}

@@ -55,7 +55,7 @@ type ReplicaUpdateOut struct {
 type Sealer interface {
 	NewSector(ctx context.Context, sector SectorRef) error
 	DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData Data) (abi.PieceInfo, error)
-	DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error)
+	DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath LocalPath) (abi.PieceInfo, error)
 
 	AddPiece(ctx context.Context, sector SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData Data) (abi.PieceInfo, error)
 

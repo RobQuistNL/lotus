@@ -865,7 +865,7 @@ type StorageMinerMethods struct {
 
 	ComputeDataCid func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data) (abi.PieceInfo, error) `perm:"admin"`
 
-	ComputeDataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) `perm:"admin"`
+	ComputeDataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (abi.PieceInfo, error) `perm:"admin"`
 
 	ComputeProof func(p0 context.Context, p1 []builtinactors.ExtendedSectorInfo, p2 abi.PoStRandomness, p3 abi.ChainEpoch, p4 abinetwork.Version) ([]builtinactors.PoStProof, error) `perm:"read"`
 
@@ -974,6 +974,8 @@ type StorageMinerMethods struct {
 	ReturnAddPiece func(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error `perm:"admin"`
 
 	ReturnDataCid func(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error `perm:"admin"`
+
+	ReturnDataCidByPath func(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error `perm:"admin"`
 
 	ReturnDownloadSector func(p0 context.Context, p1 storiface.CallID, p2 *storiface.CallError) error `perm:"admin"`
 
@@ -1156,7 +1158,7 @@ type WorkerMethods struct {
 
 	DataCid func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data) (storiface.CallID, error) `perm:"admin"`
 
-	DataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) `perm:"admin"`
+	DataCidByPath func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (storiface.CallID, error) `perm:"admin"`
 
 	DownloadSectorData func(p0 context.Context, p1 storiface.SectorRef, p2 bool, p3 map[storiface.SectorFileType]storiface.SectorLocation) (storiface.CallID, error) `perm:"admin"`
 
@@ -5192,14 +5194,14 @@ func (s *StorageMinerStub) ComputeDataCid(p0 context.Context, p1 abi.UnpaddedPie
 	return *new(abi.PieceInfo), ErrNotSupported
 }
 
-func (s *StorageMinerStruct) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) {
+func (s *StorageMinerStruct) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (abi.PieceInfo, error) {
 	if s.Internal.ComputeDataCidByPath == nil {
 		return *new(abi.PieceInfo), ErrNotSupported
 	}
 	return s.Internal.ComputeDataCidByPath(p0, p1, p2)
 }
 
-func (s *StorageMinerStub) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (abi.PieceInfo, error) {
+func (s *StorageMinerStub) ComputeDataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (abi.PieceInfo, error) {
 	return *new(abi.PieceInfo), ErrNotSupported
 }
 
@@ -5794,6 +5796,17 @@ func (s *StorageMinerStruct) ReturnDataCid(p0 context.Context, p1 storiface.Call
 }
 
 func (s *StorageMinerStub) ReturnDataCid(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error {
+	return ErrNotSupported
+}
+
+func (s *StorageMinerStruct) ReturnDataCidByPath(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error {
+	if s.Internal.ReturnDataCidByPath == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.ReturnDataCidByPath(p0, p1, p2, p3)
+}
+
+func (s *StorageMinerStub) ReturnDataCidByPath(p0 context.Context, p1 storiface.CallID, p2 abi.PieceInfo, p3 *storiface.CallError) error {
 	return ErrNotSupported
 }
 
@@ -6677,14 +6690,14 @@ func (s *WorkerStub) DataCid(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 st
 	return *new(storiface.CallID), ErrNotSupported
 }
 
-func (s *WorkerStruct) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) {
+func (s *WorkerStruct) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (storiface.CallID, error) {
 	if s.Internal.DataCid == nil {
 		return *new(storiface.CallID), ErrNotSupported
 	}
 	return s.Internal.DataCidByPath(p0, p1, p2)
 }
 
-func (s *WorkerStub) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 string) (storiface.CallID, error) {
+func (s *WorkerStub) DataCidByPath(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.LocalPath) (storiface.CallID, error) {
 	return *new(storiface.CallID), ErrNotSupported
 }
 

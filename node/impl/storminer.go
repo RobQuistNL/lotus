@@ -480,8 +480,7 @@ func (sm *StorageMinerAPI) ComputeDataCid(ctx context.Context, pieceSize abi.Unp
 	return sm.StorageMgr.DataCid(ctx, pieceSize, pieceData)
 }
 
-
-func (sm *StorageMinerAPI) ComputeDataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath string) (abi.PieceInfo, error) {
+func (sm *StorageMinerAPI) ComputeDataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (abi.PieceInfo, error) {
 	return sm.StorageMgr.DataCidByPath(ctx, pieceSize, pieceDataPath)
 }
 
