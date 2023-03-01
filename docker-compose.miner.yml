@@ -48,11 +48,11 @@ services:
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.3/tcp/2345/http
       WORKER_OVERRIDE_ID: main
-      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.mIkPsEXycoD56YDrovARS7cTgIEgf6tgqAD8KcCRfn0:/ip4/172.16.11.2/tcp/1234
+      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.nbtgBBkdl2YmRLVuK_QEAUMSpPwUXilWOHLKVlUooFc:/ip4/172.16.11.2/tcp/1234
       LOTUS_MINER_PATH: /data/miner
       LOTUS_SEALING_BATCHPRECOMMITS: false
       LOTUS_SEALING_AGGREGATECOMMITS: false
-    command: sh -c "/lotus-binaries/lotus net connect /ip4/172.16.100.12/tcp/11337/p2p/12D3KooWMJRZoLazg7PQrEjnCqQ35EXwu6AVJg4uuFG1vnMWPWDr; /lotus-binaries/lotus-miner run"
+    command: sh -c "/lotus-binaries/lotus net connect /ip4/172.16.100.12/tcp/11337/p2p/12D3KooWCUScqFzrpNymdZrdSBKBzRCPt1tZhTNKDpA6zUBxoeUP; /lotus-binaries/lotus-miner run"
     networks:
       miner:
         ipv4_address: 172.16.11.3
@@ -70,7 +70,7 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
       WORKER_OVERRIDE_ID: main
-      MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0upNCQa_azo05CV6ANVFX-e2oYLBErzD3-NKuLJgCgI:/ip4/172.16.11.3/tcp/2345
+      MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
       LOTUS_WORKER_PATH: /data/pc1worker_1
       GOLOG_LOG_FMT: color
       RUST_LOG: info
@@ -93,13 +93,12 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
       WORKER_OVERRIDE_ID: main
-      MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.0upNCQa_azo05CV6ANVFX-e2oYLBErzD3-NKuLJgCgI:/ip4/172.16.11.3/tcp/2345
+      MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
       LOTUS_WORKER_PATH: /data/pc2worker_1
     command: sh -c "/lotus-binaries/lotus-worker run --listen 172.16.11.5:4002 --addpiece=false --precommit1=false --precommit2=true --commit=false --unseal=false --parallel-fetch-limit=1 --replica-update=true --prove-replica-update2=true --regen-sector-key=true --no-swap=true --no-local-storage=true"
     networks:
       miner:
         ipv4_address: 172.16.11.5
-
 
 networks:
   miner:

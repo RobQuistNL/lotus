@@ -316,7 +316,6 @@ func toCallError(err error) *storiface.CallError {
 // doReturn tries to send the result to manager, returns true if successful
 func doReturn(ctx context.Context, rt ReturnType, ci storiface.CallID, ret storiface.WorkerReturn, res interface{}, rerr *storiface.CallError) bool {
 	for {
-		log.Infof("doReturn called with %s: ret: %+v and res: %+v", rt, ret, res)
 		err := returnFunc[rt](ctx, ci, ret, res, rerr)
 		if err == nil {
 			break

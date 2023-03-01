@@ -39,9 +39,9 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.3/tcp/2345/http
-      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.mIkPsEXycoD56YDrovARS7cTgIEgf6tgqAD8KcCRfn0:/ip4/172.16.11.2/tcp/1234
+      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.nbtgBBkdl2YmRLVuK_QEAUMSpPwUXilWOHLKVlUooFc:/ip4/172.16.11.2/tcp/1234
       LOTUS_MINER_PATH: /data/miner
-    command: sh -c "/lotus-binaries/lotus-miner init --owner=t3v4c5bczqskglukiwri4zwfttvkgmobof35kgs5zuy3hqbor7wvisu74luunnqklhty22jpq3e346b5vjzkjq --worker=t3uocyhn67r3242inmlg45j4or3f4h6coa65odpk64u3l6q4jwtpxnxwp34ffkwvusuweq3gvzam3yuf2qz24q --no-local-storage --sector-size 2k"
+    command: sh -c "/lotus-binaries/lotus-miner init --owner=t3so25q3fj7pcjcro3jdk5qdnxqfvvqsdrr2bseuxncjf4biyapcua57ri7mxxpcpmepfd2idyljsde5w2ppgq --worker=t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga --no-local-storage --sector-size 2k"
     networks:
       miner:
         ipv4_address: 172.16.11.3

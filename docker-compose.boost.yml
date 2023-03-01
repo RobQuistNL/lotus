@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  miner-boost:
+    hostname: miner1-boost
+    image: genesis-daemon
+    build: ./tools/dockers/devnet/genesis-daemon
+    volumes:
+      - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
+      - '/home/aorus/lotus:/lotus-binaries'
+      - '/home/aorus/boost:/boost-binaries'
+      - '/home/aorus/lotus-network/boost:/root/.boost'
+    environment:
+      WORKER_OVERRIDE_ID: main
+      FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.nbtgBBkdl2YmRLVuK_QEAUMSpPwUXilWOHLKVlUooFc:/ip4/172.16.11.2/tcp/1234
+      MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
+      APISEALER: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
+      APISECTORINDEX: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
+      PUBLISH_STORAGE_DEALS_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
+      COLLAT_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
+      LOTUS_WORKER_PATH: /data/pc2worker_1
+    command: sh -c "/boost-binaries/boostd --vv run"
+    networks:
+      miner:
+        ipv4_address: 172.16.11.6
+    ports:
+      - "8080:8080"
+networks:
+  miner:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.11.0/24"
+  external:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.100.0/24"

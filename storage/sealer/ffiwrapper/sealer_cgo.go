@@ -59,6 +59,18 @@ func (sb *Sealer) NewSector(ctx context.Context, sector storiface.SectorRef) err
 func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
 	log.Infof("Running DataCid (given path is %+v)", localPath)
 
+	origPieceData := pieceData
+	defer func() { // We always close the original reader
+		closer, ok := origPieceData.(io.Closer)
+		if !ok {
+			log.Warnf("DataCid: cannot close pieceData reader %T because it is not an io.Closer", origPieceData)
+			return
+		}
+		if err := closer.Close(); err != nil {
+			log.Warnw("closing pieceData in DataCid", "error", err)
+		}
+	}()
+
 	// Check if the path is given and is available locally
 	if localPath.Path != "" {
 		log.Infof("Trying local file for DataCID", "filename", localPath.Path)
@@ -77,18 +89,6 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	} else {
 		log.Infof("Not using local file for DataCID, as path is empty")
 	}
-
-	origPieceData := pieceData
-	defer func() { // We always close the original reader
-		closer, ok := origPieceData.(io.Closer)
-		if !ok {
-			log.Warnf("DataCid: cannot close pieceRef.Data reader %T because it is not an io.Closer", origPieceData)
-			return
-		}
-		if err := closer.Close(); err != nil {
-			log.Warnw("closing pieceRef datareader in DataCid", "error", err)
-		}
-	}()
 
 	// Continue where we left off - using a local reader if we have it or a streamed one if we don't have a local one
 	pieceData = io.LimitReader(io.MultiReader(
@@ -159,11 +159,6 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 				if e.error != nil {
 					return abi.PieceInfo{}, e.error
 				}
-
-				log.Infof("DCID: All pieces are done? %+v", abi.PieceInfo{
-					Size:     abi.UnpaddedPieceSize(read).Padded(),
-					PieceCID: e.Cid,
-				})
 
 				return abi.PieceInfo{
 					Size:     abi.UnpaddedPieceSize(read).Padded(),

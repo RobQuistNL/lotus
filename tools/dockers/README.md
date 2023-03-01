@@ -19,6 +19,8 @@ Reset testnet;
 ```shell
 sudo rm -rf daemon; sudo rm -rf miner; sudo rm -rf sectors; sudo mkdir -p daemon miner sectors;
 ```
+then copy over files;
+sudo cp devgen.car ../miner
 
 Reset miner;
 ```shell
@@ -35,6 +37,20 @@ sudo mkdir -p storage0 storage1 pc2worker_1 pc2worker_2 pc1worker_1 pc1worker_1;
 
 sudo mkdir -p pc1worker_1/storage0 pc1worker_2/storage0;
 ```
+
+Then start setup.miner
+
+`sudo docker exec lotus-genesis-daemon-1 /lotus-binaries/lotus net listen`
+paste that in main connect script
+
+then make 3 wallets
+`sudo docker exec lotus-miner-daemon-1 /lotus-binaries/lotus wallet new bls`
+
+then send some funds there
+`sudo docker exec lotus-genesis-daemon-1 /lotus-binaries/lotus send WALLET 100000`
+
+then lotus net connect
+`sudo docker exec lotus-miner-daemon-1 /lotus-binaries/lotus net connect `sudo docker exec lotus-genesis-daemon-1 /lotus-binaries/lotus net listen` `
 
 sudo nano storage0/sectorstore.json
 ```json
