@@ -149,7 +149,7 @@ func New(ctx context.Context, lstor *paths.Local, stor paths.Store, ls paths.Loc
 		localTasks = append(localTasks, sealtasks.TTDownloadSector)
 	}
 	if sc.AllowAddPiece {
-		localTasks = append(localTasks, sealtasks.TTAddPiece, sealtasks.TTDataCid, sealtasks.TTDataCidByPath)
+		localTasks = append(localTasks, sealtasks.TTAddPiece, sealtasks.TTDataCid)
 	}
 	if sc.AllowPreCommit1 {
 		localTasks = append(localTasks, sealtasks.TTPreCommit1)
@@ -382,7 +382,7 @@ func (m *Manager) NewSector(ctx context.Context, sector storiface.SectorRef) err
 	return nil
 }
 
-func (m *Manager) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {
+func (m *Manager) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -390,28 +390,7 @@ func (m *Manager) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 
 	var out abi.PieceInfo
 	err := m.sched.Schedule(ctx, storiface.NoSectorRef, sealtasks.TTDataCid, selector, schedNop, func(ctx context.Context, w Worker) error {
-		p, err := m.waitSimpleCall(ctx)(w.DataCid(ctx, pieceSize, pieceData))
-		if err != nil {
-			return err
-		}
-		if p != nil {
-			out = p.(abi.PieceInfo)
-		}
-		return nil
-	})
-
-	return out, err
-}
-
-func (m *Manager) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (abi.PieceInfo, error) {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	selector := newTaskSelector()
-
-	var out abi.PieceInfo
-	err := m.sched.Schedule(ctx, storiface.NoSectorRef, sealtasks.TTDataCidByPath, selector, schedNop, func(ctx context.Context, w Worker) error {
-		p, err := m.waitSimpleCall(ctx)(w.DataCidByPath(ctx, pieceSize, pieceDataPath))
+		p, err := m.waitSimpleCall(ctx)(w.DataCid(ctx, pieceSize, pieceData, localPath))
 		if err != nil {
 			return err
 		}
@@ -1177,10 +1156,6 @@ func (m *Manager) DownloadSectorData(ctx context.Context, sector storiface.Secto
 }
 
 func (m *Manager) ReturnDataCid(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
-	return m.returnResult(ctx, callID, pi, err)
-}
-
-func (m *Manager) ReturnDataCidByPath(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
 	return m.returnResult(ctx, callID, pi, err)
 }
 

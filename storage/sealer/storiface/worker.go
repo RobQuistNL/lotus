@@ -118,8 +118,7 @@ var UndefCall CallID
 
 type WorkerCalls interface {
 	// async
-	DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData Data) (CallID, error)
-	DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath LocalPath) (CallID, error)
+	DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData Data, localPath LocalPath) (CallID, error)
 	AddPiece(ctx context.Context, sector SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData Data) (CallID, error)
 	SealPreCommit1(ctx context.Context, sector SectorRef, ticket abi.SealRandomness, pieces []abi.PieceInfo) (CallID, error)
 	SealPreCommit2(ctx context.Context, sector SectorRef, pc1o PreCommit1Out) (CallID, error)
@@ -202,7 +201,6 @@ func Err(code ErrorCode, sub error) *CallError {
 
 type WorkerReturn interface {
 	ReturnDataCid(ctx context.Context, callID CallID, pi abi.PieceInfo, err *CallError) error
-	ReturnDataCidByPath(ctx context.Context, callID CallID, pi abi.PieceInfo, err *CallError) error
 	ReturnAddPiece(ctx context.Context, callID CallID, pi abi.PieceInfo, err *CallError) error
 	ReturnSealPreCommit1(ctx context.Context, callID CallID, p1o PreCommit1Out, err *CallError) error
 	ReturnSealPreCommit2(ctx context.Context, callID CallID, sealed SectorCids, err *CallError) error

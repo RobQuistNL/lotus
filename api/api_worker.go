@@ -33,8 +33,7 @@ type Worker interface {
 	Info(context.Context) (storiface.WorkerInfo, error)                 //perm:admin
 
 	// storiface.WorkerCalls
-	DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error)                                                                                        //perm:admin
-	DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (storiface.CallID, error)                                                                         //perm:admin
+	DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (storiface.CallID, error)                                                         //perm:admin
 	AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error)                    //perm:admin
 	SealPreCommit1(ctx context.Context, sector storiface.SectorRef, ticket abi.SealRandomness, pieces []abi.PieceInfo) (storiface.CallID, error)                                                             //perm:admin
 	SealPreCommit2(ctx context.Context, sector storiface.SectorRef, pc1o storiface.PreCommit1Out) (storiface.CallID, error)                                                                                  //perm:admin

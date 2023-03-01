@@ -79,11 +79,7 @@ func (mgr *SectorMgr) SectorsUnsealPiece(ctx context.Context, sector storiface.S
 	panic("SectorMgr: unsealing piece: implement me")
 }
 
-func (mgr *SectorMgr) DataCid(ctx context.Context, size abi.UnpaddedPieceSize, r io.Reader) (abi.PieceInfo, error) {
-	panic("todo")
-}
-
-func (mgr *SectorMgr) DataCidByPath(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.LocalPath) (abi.PieceInfo, error) {
+func (mgr *SectorMgr) DataCid(ctx context.Context, size abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
 	panic("todo")
 }
 
@@ -554,10 +550,6 @@ func (mgr *SectorMgr) CheckProvable(ctx context.Context, pp abi.RegisteredPoStPr
 var _ storiface.WorkerReturn = &SectorMgr{}
 
 func (mgr *SectorMgr) ReturnDataCid(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
-	panic("not supported")
-}
-
-func (mgr *SectorMgr) ReturnDataCidByPath(ctx context.Context, callID storiface.CallID, pi abi.PieceInfo, err *storiface.CallError) error {
 	panic("not supported")
 }
 

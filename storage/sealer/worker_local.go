@@ -130,14 +130,6 @@ func newLocalWorker(executor ExecutorFunc, wcfg WorkerConfig, envLookup EnvFunc,
 			err := storiface.Err(storiface.ErrTempWorkerRestart, xerrors.Errorf("worker [name: %s] restarted", w.name))
 
 			// TODO: Handle restarting PC1 once support is merged
-			log.Warnf("Checking response for call: %+v", call)
-			//if call.RetType == DataCidByPath { // Temp to fix nil pointer dereerences (maybe because I'm using a string in the jobs?)
-			//	if err := w.ct.onReturned(call.ID); err != nil {
-			//		log.Errorf("marking call as returned failed: %s: %+v", call.RetType, err)
-			//	}
-			//	break
-			//}
-
 			if doReturn(context.TODO(), call.RetType, call.ID, ret, nil, err) {
 				if err := w.ct.onReturned(call.ID); err != nil {
 					log.Errorf("marking call as returned failed: %s: %+v", call.RetType, err)
@@ -195,7 +187,6 @@ type ReturnType string
 
 const (
 	DataCid               ReturnType = "DataCid"
-	DataCidByPath         ReturnType = "DataCidByPath"
 	AddPiece              ReturnType = "AddPiece"
 	SealPreCommit1        ReturnType = "SealPreCommit1"
 	SealPreCommit2        ReturnType = "SealPreCommit2"
@@ -250,7 +241,6 @@ func rfunc(in interface{}) func(context.Context, storiface.CallID, storiface.Wor
 
 var returnFunc = map[ReturnType]func(context.Context, storiface.CallID, storiface.WorkerReturn, interface{}, *storiface.CallError) error{
 	DataCid:               rfunc(storiface.WorkerReturn.ReturnDataCid),
-	DataCidByPath:         rfunc(storiface.WorkerReturn.ReturnDataCidByPath),
 	AddPiece:              rfunc(storiface.WorkerReturn.ReturnAddPiece),
 	SealPreCommit1:        rfunc(storiface.WorkerReturn.ReturnSealPreCommit1),
 	SealPreCommit2:        rfunc(storiface.WorkerReturn.ReturnSealPreCommit2),
@@ -357,25 +347,14 @@ func (l *LocalWorker) NewSector(ctx context.Context, sector storiface.SectorRef)
 	return sb.NewSector(ctx, sector)
 }
 
-func (l *LocalWorker) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error) {
+func (l *LocalWorker) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (storiface.CallID, error) {
 	sb, err := l.executor()
 	if err != nil {
 		return storiface.UndefCall, err
 	}
 
 	return l.asyncCall(ctx, storiface.NoSectorRef, DataCid, func(ctx context.Context, ci storiface.CallID) (interface{}, error) {
-		return sb.DataCid(ctx, pieceSize, pieceData)
-	})
-}
-
-func (l *LocalWorker) DataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (storiface.CallID, error) {
-	sb, err := l.executor()
-	if err != nil {
-		return storiface.UndefCall, err
-	}
-
-	return l.asyncCall(ctx, storiface.NoSectorRef, DataCidByPath, func(ctx context.Context, ci storiface.CallID) (interface{}, error) {
-		return sb.DataCidByPath(ctx, pieceSize, pieceDataPath)
+		return sb.DataCid(ctx, pieceSize, pieceData, localPath)
 	})
 }
 

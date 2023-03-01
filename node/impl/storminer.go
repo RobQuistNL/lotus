@@ -476,12 +476,8 @@ func (sm *StorageMinerAPI) ComputeWindowPoSt(ctx context.Context, dlIdx uint64, 
 	return sm.WdPoSt.ComputePoSt(ctx, dlIdx, ts)
 }
 
-func (sm *StorageMinerAPI) ComputeDataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {
-	return sm.StorageMgr.DataCid(ctx, pieceSize, pieceData)
-}
-
-func (sm *StorageMinerAPI) ComputeDataCidByPath(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceDataPath storiface.LocalPath) (abi.PieceInfo, error) {
-	return sm.StorageMgr.DataCidByPath(ctx, pieceSize, pieceDataPath)
+func (sm *StorageMinerAPI) ComputeDataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
+	return sm.StorageMgr.DataCid(ctx, pieceSize, pieceData, localPath)
 }
 
 func (sm *StorageMinerAPI) WorkerConnect(ctx context.Context, url string) error {

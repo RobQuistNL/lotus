@@ -113,7 +113,6 @@
 * [Return](#Return)
   * [ReturnAddPiece](#ReturnAddPiece)
   * [ReturnDataCid](#ReturnDataCid)
-  * [ReturnDataCidByPath](#ReturnDataCidByPath)
   * [ReturnDownloadSector](#ReturnDownloadSector)
   * [ReturnFetch](#ReturnFetch)
   * [ReturnFinalizeReplicaUpdate](#ReturnFinalizeReplicaUpdate)
@@ -2380,37 +2379,6 @@ Inputs:
 Response: `{}`
 
 ### ReturnDataCid
-storiface.WorkerReturn
-
-
-Perms: admin
-
-Inputs:
-```json
-[
-  {
-    "Sector": {
-      "Miner": 1000,
-      "Number": 9
-    },
-    "ID": "07070707-0707-0707-0707-070707070707"
-  },
-  {
-    "Size": 1032,
-    "PieceCID": {
-      "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
-    }
-  },
-  {
-    "Code": 0,
-    "Message": "string value"
-  }
-]
-```
-
-Response: `{}`
-
-### ReturnDataCidByPath
 storiface.WorkerReturn
 
 

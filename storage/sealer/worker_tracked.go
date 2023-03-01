@@ -191,9 +191,9 @@ func (t *trackedWorker) ReleaseUnsealed(ctx context.Context, sector storiface.Se
 	return t.tracker.track(ctx, t.execute, t.wid, t.workerInfo, sector, sealtasks.TTFinalizeUnsealed, func() (storiface.CallID, error) { return t.Worker.ReleaseUnsealed(ctx, sector, keepUnsealed) })
 }
 
-func (t *trackedWorker) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error) {
+func (t *trackedWorker) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (storiface.CallID, error) {
 	return t.tracker.track(ctx, t.execute, t.wid, t.workerInfo, storiface.NoSectorRef, sealtasks.TTDataCid, func() (storiface.CallID, error) {
-		return t.Worker.DataCid(ctx, pieceSize, pieceData)
+		return t.Worker.DataCid(ctx, pieceSize, pieceData, localPath)
 	})
 }
 
