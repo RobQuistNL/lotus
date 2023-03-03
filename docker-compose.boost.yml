@@ -10,19 +10,29 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
       - '/home/aorus/boost:/boost-binaries'
       - '/home/aorus/lotus-network/boost:/root/.boost'
+      - '/home/aorus/lotus-network/boost-client:/root/.boost-client'
     environment:
       WORKER_OVERRIDE_ID: main
       FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.nbtgBBkdl2YmRLVuK_QEAUMSpPwUXilWOHLKVlUooFc:/ip4/172.16.11.2/tcp/1234
       MINER_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
+      MARKETS_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.XGQn2h0YnQ59hXK-9wadUQzL6I9-Mak8EcfN8LnntY0:/ip4/172.16.11.6/tcp/8787
       APISEALER: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
       APISECTORINDEX: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
       PUBLISH_STORAGE_DEALS_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
       COLLAT_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
-      LOTUS_WORKER_PATH: /data/pc2worker_1
+      LOTUS_API_LISTENADDRESS: /ip4/172.16.11.6/tcp/8787/http
+      LOTUS_API_REMOTELISTENADDRESS: 172.16.100.26:11337
+      LOTUS_LIBP2P_LISTENADDRESSES: /ip4/0.0.0.0/tcp/11337
+      LOTUS_LIBP2P_ANNOUNCEADDRESSES: /ip4/172.16.100.26/tcp/11337
+
+
     command: sh -c "/boost-binaries/boostd --vv run"
     networks:
       miner:
         ipv4_address: 172.16.11.6
+      external:
+        ipv4_address: 172.16.100.26
+
     ports:
       - "8080:8080"
 networks:

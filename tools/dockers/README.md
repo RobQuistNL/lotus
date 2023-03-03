@@ -14,6 +14,8 @@ cd /home/aorus/lotus
 sudo docker build -t genesis-daemon -f ./tools/dockers/devnet/genesis-daemon/Dockerfile .
 ```
 
+also set external ip; lotus-miner actor set-addrs /ip4/xxx/tcp/11337
+
 Reset testnet;
 
 ```shell

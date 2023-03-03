@@ -48,6 +48,7 @@ services:
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.3/tcp/2345/http
       WORKER_OVERRIDE_ID: main
+      MARKETS_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.XGQn2h0YnQ59hXK-9wadUQzL6I9-Mak8EcfN8LnntY0:/ip4/172.16.11.6/tcp/8787
       FULLNODE_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.nbtgBBkdl2YmRLVuK_QEAUMSpPwUXilWOHLKVlUooFc:/ip4/172.16.11.2/tcp/1234
       LOTUS_MINER_PATH: /data/miner
       LOTUS_SEALING_BATCHPRECOMMITS: false
@@ -99,6 +100,8 @@ services:
     networks:
       miner:
         ipv4_address: 172.16.11.5
+      external:
+        ipv4_address: 172.16.100.5
 
 networks:
   miner:

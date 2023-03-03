@@ -18,7 +18,6 @@ services:
       APISECTORINDEX: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.ecx3veu6tczaubDmzmgLn80RVxNm9w6k7fGZ2r6NBaI:/ip4/172.16.11.3/tcp/2345
       PUBLISH_STORAGE_DEALS_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
       COLLAT_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
-      LOTUS_WORKER_PATH: /data/pc2worker_1
     command: sh -c "/boost-binaries/boostd --vv init --api-sealer=$$APISEALER --api-sector-index=$$APISECTORINDEX --wallet-publish-storage-deals=$$PUBLISH_STORAGE_DEALS_WALLET --wallet-deal-collateral=$$COLLAT_WALLET --max-staging-deals-bytes=50000000000"
     networks:
       miner:
