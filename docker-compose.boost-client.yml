@@ -19,6 +19,8 @@ services:
       external:
         ipv4_address: 172.16.100.27
 
+    command: tail -f somefile
+
 networks:
   miner:
     ipam:
