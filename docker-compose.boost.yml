@@ -25,7 +25,6 @@ services:
       LOTUS_LIBP2P_LISTENADDRESSES: /ip4/172.16.100.26/tcp/11337
       LOTUS_LIBP2P_ANNOUNCEADDRESSES: /ip4/172.16.100.26/tcp/11337
 
-
     command: sh -c "/boost-binaries/boostd --vv run"
     networks:
       miner:
