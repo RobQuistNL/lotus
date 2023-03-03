@@ -19,7 +19,7 @@ services:
       external:
         ipv4_address: 172.16.100.27
 
-    command: tail -f /var/log/syslog
+    command: tail -F someting
 
 networks:
   miner:
