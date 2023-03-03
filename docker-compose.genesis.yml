@@ -11,8 +11,8 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.10.2/tcp/1234/http
-      LOTUS_LIBP2P_LISTENADDRESSES: '/ip4/0.0.0.0/tcp/11337'
-      LOTUS_LIBP2P_ANNOUNCEADDRESSES: '/ip4/172.16.100.12/tcp/11337'
+      LOTUS_LIBP2P_LISTENADDRESSES: '/ip4/0.0.0.0/tcp/13370'
+      LOTUS_LIBP2P_ANNOUNCEADDRESSES: '/ip4/172.16.100.12/tcp/13370'
       LOTUS_PATH: /data/daemon
     command: sh -c "/lotus-binaries/lotus daemon --genesis=/data/devgen.car"
     healthcheck:

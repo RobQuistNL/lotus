@@ -11,9 +11,9 @@ services:
       - '/home/aorus/lotus:/lotus-binaries'
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.2/tcp/1234/http
-      LOTUS_API_REMOTELISTENADDRESS:
-      LOTUS_LIBP2P_LISTENADDRESSES:
-      LOTUS_LIBP2P_ANNOUNCEADDRESSES:
+      LOTUS_API_REMOTELISTENADDRESS: /ip4/172.16.100.22/tcp/13370
+      LOTUS_LIBP2P_LISTENADDRESSES: '/ip4/0.0.0.0/tcp/13370'
+      LOTUS_LIBP2P_ANNOUNCEADDRESSES: '/ip4/172.16.100.22/tcp/13370'
       LOTUS_PATH: /data/daemon
     command: sh -c "/lotus-binaries/lotus daemon --genesis=/data/devgen.car"
     healthcheck:
@@ -54,7 +54,7 @@ services:
       LOTUS_MINER_PATH: /data/miner
       LOTUS_SEALING_BATCHPRECOMMITS: false
       LOTUS_SEALING_AGGREGATECOMMITS: false
-    command: sh -c "/lotus-binaries/lotus net connect /ip4/172.16.100.12/tcp/11337/p2p/12D3KooWCUScqFzrpNymdZrdSBKBzRCPt1tZhTNKDpA6zUBxoeUP; /lotus-binaries/lotus-miner run"
+    command: sh -c "/lotus-binaries/lotus net connect /ip4/172.16.100.12/tcp/13370/p2p/12D3KooWCUScqFzrpNymdZrdSBKBzRCPt1tZhTNKDpA6zUBxoeUP; /lotus-binaries/lotus-miner run"
     networks:
       miner:
         ipv4_address: 172.16.11.3
