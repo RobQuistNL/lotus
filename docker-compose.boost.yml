@@ -21,6 +21,7 @@ services:
       PUBLISH_STORAGE_DEALS_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
       COLLAT_WALLET: t3va6jw5sdnrlzy4tk6xvbko2boyl2tn5ucx7yytiznm3wp5yxsgsssuemm7ksqt473vhxtm2eietbmfgq5lga
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.6/tcp/8787/http
+      LOTUS_DEALMAKING_REMOTECOMMP: true
       LOTUS_API_REMOTELISTENADDRESS: 172.16.11.6:8787
       LOTUS_LIBP2P_LISTENADDRESSES: /ip4/172.16.100.26/tcp/11337
       LOTUS_LIBP2P_ANNOUNCEADDRESSES: /ip4/172.16.100.26/tcp/11337
