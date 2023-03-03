@@ -19,8 +19,6 @@ services:
       external:
         ipv4_address: 172.16.100.27
 
-    ports:
-      - "8080:8080"
 networks:
   miner:
     ipam:
