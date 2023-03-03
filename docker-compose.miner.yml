@@ -56,6 +56,7 @@ services:
       LOTUS_MINER_PATH: /data/miner
       LOTUS_SEALING_BATCHPRECOMMITS: false
       LOTUS_SEALING_AGGREGATECOMMITS: false
+      BOOST_API_INFO: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJyZWFkIiwid3JpdGUiLCJzaWduIiwiYWRtaW4iXX0.XGQn2h0YnQ59hXK-9wadUQzL6I9-Mak8EcfN8LnntY0:/ip4/172.16.11.6/tcp/8787
     command: sh -c "/lotus-binaries/lotus net connect /ip4/172.16.100.12/tcp/13370/p2p/12D3KooWCUScqFzrpNymdZrdSBKBzRCPt1tZhTNKDpA6zUBxoeUP; /lotus-binaries/lotus-miner run"
     networks:
       miner:
