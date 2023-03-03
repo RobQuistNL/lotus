@@ -45,6 +45,7 @@ services:
       - '/var/tmp/filecoin-proof-parameters:/var/tmp/filecoin-proof-parameters'
       - '/home/aorus/lotus-network/miner:/data'
       - '/home/aorus/lotus:/lotus-binaries'
+      - '/home/aorus/boost:/boost-binaries'
     environment:
       LOTUS_API_LISTENADDRESS: /ip4/172.16.11.3/tcp/2345/http
       LOTUS_API_REMOTELISTENADDRESS: 172.16.11.3:2345
@@ -102,8 +103,6 @@ services:
     networks:
       miner:
         ipv4_address: 172.16.11.5
-      external:
-        ipv4_address: 172.16.100.5
 
 networks:
   miner:
