@@ -48,7 +48,7 @@ func DsKeyToDealID(key datastore.Key) (uint64, error) {
 }
 
 type SectorBuilder interface {
-	SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d api.PieceDealInfo) (api.SectorOffset, error)
+	SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d api.PieceDealInfo, lpath storiface.LocalPath) (api.SectorOffset, error)
 	SectorsStatus(ctx context.Context, sid abi.SectorNumber, showOnChainInfo bool) (api.SectorInfo, error)
 }
 

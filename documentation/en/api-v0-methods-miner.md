@@ -2951,6 +2951,9 @@ Inputs:
       "EndEpoch": 10101
     },
     "KeepUnsealed": true
+  },
+  {
+    "Path": "string value"
   }
 ]
 ```
