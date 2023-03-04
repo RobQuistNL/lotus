@@ -75,7 +75,7 @@ type StorageMiner interface {
 	// Add piece to an open sector. If no sectors with enough space are open,
 	// either a new sector will be created, or this call will block until more
 	// sectors can be created.
-	SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d PieceDealInfo) (SectorOffset, error) //perm:admin
+	SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d PieceDealInfo, lpath storiface.LocalPath) (SectorOffset, error) //perm:admin
 
 	SectorsUnsealPiece(ctx context.Context, sector storiface.SectorRef, offset storiface.UnpaddedByteIndex, size abi.UnpaddedPieceSize, randomness abi.SealRandomness, commd *cid.Cid) error //perm:admin
 

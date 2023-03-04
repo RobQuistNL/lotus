@@ -234,7 +234,8 @@ func (m *Sealing) handleAddPiece(ctx statemachine.Context, sector SectorInfo) er
 				m.minerSector(sector.SectorType, sector.SectorNumber),
 				pieceSizes,
 				p.Unpadded(),
-				nullreader.NewNullReader(p.Unpadded()), storiface.LocalPath{Path: ""},
+				nullreader.NewNullReader(p.Unpadded()),
+				storiface.LocalPath{Path: ""},
 			)
 			if err != nil {
 				err = xerrors.Errorf("writing padding piece: %w", err)
@@ -258,7 +259,7 @@ func (m *Sealing) handleAddPiece(ctx statemachine.Context, sector SectorInfo) er
 			pieceSizes,
 			deal.size,
 			deal.data,
-			storiface.LocalPath{Path: ""},
+			deal.localPath,
 		)
 		if err != nil {
 			err = xerrors.Errorf("writing piece: %w", err)
@@ -291,7 +292,7 @@ func (m *Sealing) handleAddPieceFailed(ctx statemachine.Context, sector SectorIn
 	return ctx.Send(SectorRetryWaitDeals{})
 }
 
-func (m *Sealing) SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, data storiface.Data, deal api.PieceDealInfo) (api.SectorOffset, error) {
+func (m *Sealing) SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, data storiface.Data, deal api.PieceDealInfo, localPath storiface.LocalPath) (api.SectorOffset, error) {
 	log.Infof("Adding piece for deal %d (publish msg: %s)", deal.DealID, deal.PublishCid)
 	if (padreader.PaddedSize(uint64(size))) != size {
 		return api.SectorOffset{}, xerrors.Errorf("cannot allocate unpadded piece")
@@ -353,7 +354,7 @@ func (m *Sealing) SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPiec
 	}
 
 	// addPendingPiece takes over m.inputLk
-	pp := m.addPendingPiece(ctx, size, data, deal, claimTerms, sp)
+	pp := m.addPendingPiece(ctx, size, data, deal, claimTerms, sp, localPath)
 
 	res, err := waitAddPieceResp(ctx, pp)
 	if err != nil {
@@ -387,14 +388,15 @@ func (m *Sealing) getClaimTerms(ctx context.Context, deal api.PieceDealInfo, tsk
 }
 
 // called with m.inputLk; transfers the lock to another goroutine!
-func (m *Sealing) addPendingPiece(ctx context.Context, size abi.UnpaddedPieceSize, data storiface.Data, deal api.PieceDealInfo, ct pieceClaimBounds, sp abi.RegisteredSealProof) *pendingPiece {
+func (m *Sealing) addPendingPiece(ctx context.Context, size abi.UnpaddedPieceSize, data storiface.Data, deal api.PieceDealInfo, ct pieceClaimBounds, sp abi.RegisteredSealProof, localPath storiface.LocalPath) *pendingPiece {
 	doneCh := make(chan struct{})
 	pp := &pendingPiece{
 		size:       size,
 		deal:       deal,
 		claimTerms: ct,
 
-		data: data,
+		data:      data,
+		localPath: localPath,
 
 		doneCh:   doneCh,
 		assigned: false,

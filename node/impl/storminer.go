@@ -240,8 +240,8 @@ func (sm *StorageMinerAPI) SectorsStatus(ctx context.Context, sid abi.SectorNumb
 	return sInfo, nil
 }
 
-func (sm *StorageMinerAPI) SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d api.PieceDealInfo) (api.SectorOffset, error) {
-	so, err := sm.Miner.SectorAddPieceToAny(ctx, size, r, d)
+func (sm *StorageMinerAPI) SectorAddPieceToAny(ctx context.Context, size abi.UnpaddedPieceSize, r storiface.Data, d api.PieceDealInfo, lpath storiface.LocalPath) (api.SectorOffset, error) {
+	so, err := sm.Miner.SectorAddPieceToAny(ctx, size, r, d, lpath)
 	if err != nil {
 		// jsonrpc doesn't support returning values with errors, make sure we never do that
 		return api.SectorOffset{}, err
