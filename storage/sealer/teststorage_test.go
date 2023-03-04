@@ -109,7 +109,7 @@ func (t *testExec) NewSector(ctx context.Context, sector storiface.SectorRef) er
 	panic("implement me")
 }
 
-func (t *testExec) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {
+func (t *testExec) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
 	resp := make(chan apres)
 	t.apch <- resp
 	ar := <-resp

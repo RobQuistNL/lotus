@@ -357,14 +357,14 @@ func (l *LocalWorker) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSi
 	})
 }
 
-func (l *LocalWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, epcs []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize, r io.Reader) (storiface.CallID, error) {
+func (l *LocalWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, epcs []abi.UnpaddedPieceSize, sz abi.UnpaddedPieceSize, r io.Reader, localPath storiface.LocalPath) (storiface.CallID, error) {
 	sb, err := l.executor()
 	if err != nil {
 		return storiface.UndefCall, err
 	}
 
 	return l.asyncCall(ctx, sector, AddPiece, func(ctx context.Context, ci storiface.CallID) (interface{}, error) {
-		return sb.AddPiece(ctx, sector, epcs, sz, r)
+		return sb.AddPiece(ctx, sector, epcs, sz, r, localPath)
 	})
 }
 

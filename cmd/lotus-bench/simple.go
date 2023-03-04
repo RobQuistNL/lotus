@@ -192,7 +192,7 @@ var simpleAddPiece = &cli.Command{
 
 		start := time.Now()
 
-		pi, err := sealer.AddPiece(ctx, sr, []abi.UnpaddedPieceSize{}, abi.PaddedPieceSize(sectorSize).Unpadded(), data)
+		pi, err := sealer.AddPiece(ctx, sr, []abi.UnpaddedPieceSize{}, abi.PaddedPieceSize(sectorSize).Unpadded(), data, storiface.LocalPath{Path: ""})
 		if err != nil {
 			return xerrors.Errorf("add piece: %w", err)
 		}

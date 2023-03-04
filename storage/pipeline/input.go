@@ -234,7 +234,8 @@ func (m *Sealing) handleAddPiece(ctx statemachine.Context, sector SectorInfo) er
 				m.minerSector(sector.SectorType, sector.SectorNumber),
 				pieceSizes,
 				p.Unpadded(),
-				nullreader.NewNullReader(p.Unpadded()))
+				nullreader.NewNullReader(p.Unpadded()), storiface.LocalPath{Path: ""},
+			)
 			if err != nil {
 				err = xerrors.Errorf("writing padding piece: %w", err)
 				deal.accepted(sector.SectorNumber, offset, err)
@@ -256,7 +257,9 @@ func (m *Sealing) handleAddPiece(ctx statemachine.Context, sector SectorInfo) er
 			m.minerSector(sector.SectorType, sector.SectorNumber),
 			pieceSizes,
 			deal.size,
-			deal.data)
+			deal.data,
+			storiface.LocalPath{Path: ""},
+			)
 		if err != nil {
 			err = xerrors.Errorf("writing piece: %w", err)
 			deal.accepted(sector.SectorNumber, offset, err)

@@ -219,7 +219,9 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 	}, nil
 }
 
-func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, existingPieceSizes []abi.UnpaddedPieceSize, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (abi.PieceInfo, error) {
+func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, existingPieceSizes []abi.UnpaddedPieceSize, pieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (abi.PieceInfo, error) {
+	log.Infof("Running AddPiece (given path is %+v)", localPath)
+
 	origPieceData := pieceData
 	defer func() {
 		closer, ok := origPieceData.(io.Closer)
@@ -233,7 +235,7 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 	}()
 
 	// TODO: allow tuning those:
-	chunk := abi.PaddedPieceSize(4 << 20)
+	chunk := abi.PaddedPieceSize(16 << 20) // 16 MiB
 	parallel := runtime.NumCPU()
 
 	var offset abi.UnpaddedPieceSize
@@ -296,6 +298,25 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 	}
 
 	pw := fr32.NewPadWriter(w)
+
+	// Check if the path is given and is available locally
+	if localPath.Path != "" {
+		log.Infof("Trying local file for AddPiece", "filename", localPath.Path)
+		localFile, err := os.OpenFile(localPath.Path, os.O_RDONLY, 0)
+		if err != nil {
+			log.Warnw("Can not open local file for AP, falling back to Stream reader", "filename", localPath.Path, "error", err)
+		} else {
+			st, err := localFile.Stat()
+			if err != nil {
+				log.Warnw("Can not stat local file for AP, falling back to Stream reader", "filename", localPath.Path, "error", err)
+			} else {
+				log.Infof("Actually opened file for AP! %s (%+v)", localPath.Path, uint64(st.Size()))
+				pieceData = io.Reader(localFile)
+			}
+		}
+	} else {
+		log.Infof("Not using local file for AddPiece, as path is empty")
+	}
 
 	pr := io.TeeReader(io.LimitReader(pieceData, int64(pieceSize)), pw)
 
@@ -413,6 +434,11 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 		pieceCID = paddedCid
 	}
 
+	log.Infof("Addpiece: Done generating pieceCID: %+v", abi.PieceInfo{
+		Size:     pieceSize.Padded(),
+		PieceCID: pieceCID,
+	})
+
 	return abi.PieceInfo{
 		Size:     pieceSize.Padded(),
 		PieceCID: pieceCID,
@@ -473,7 +499,7 @@ func (sb *Sealer) AcquireSectorKeyOrRegenerate(ctx context.Context, sector stori
 	}
 	paddedSize := abi.PaddedPieceSize(sectorSize)
 
-	_, err = sb.AddPiece(ctx, sector, nil, paddedSize.Unpadded(), nr.NewNullReader(paddedSize.Unpadded()))
+	_, err = sb.AddPiece(ctx, sector, nil, paddedSize.Unpadded(), nr.NewNullReader(paddedSize.Unpadded()), storiface.LocalPath{Path: ""})
 	if err != nil {
 		return paths, done, xerrors.Errorf("recomputing empty data: %w", err)
 	}

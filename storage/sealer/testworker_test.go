@@ -59,9 +59,9 @@ func (t *testWorker) asyncCall(sector storiface.SectorRef, work func(ci storifac
 	return ci, nil
 }
 
-func (t *testWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error) {
+func (t *testWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (storiface.CallID, error) {
 	return t.asyncCall(sector, func(ci storiface.CallID) {
-		p, err := t.mockSeal.AddPiece(ctx, sector, pieceSizes, newPieceSize, pieceData)
+		p, err := t.mockSeal.AddPiece(ctx, sector, pieceSizes, newPieceSize, pieceData, localPath)
 		if err := t.ret.ReturnAddPiece(ctx, ci, p, toCallError(err)); err != nil {
 			log.Error(err)
 		}

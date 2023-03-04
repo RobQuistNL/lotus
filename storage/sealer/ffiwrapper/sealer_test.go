@@ -62,7 +62,7 @@ func (s *seal) precommit(t *testing.T, sb *Sealer, id storiface.SectorRef, done 
 
 	var err error
 	r := data(id.ID.Number, dlen)
-	s.pi, err = sb.AddPiece(context.TODO(), id, []abi.UnpaddedPieceSize{}, dlen, r)
+	s.pi, err = sb.AddPiece(context.TODO(), id, []abi.UnpaddedPieceSize{}, dlen, r, storiface.LocalPath{Path: ""})
 	if err != nil {
 		t.Errorf("%+v", err)
 		return
@@ -767,7 +767,7 @@ func TestAddPiece512M(t *testing.T) {
 			Number: 0,
 		},
 		ProofType: abi.RegisteredSealProof_StackedDrg512MiBV1_1,
-	}, nil, sz, io.LimitReader(r, int64(sz)))
+	}, nil, sz, io.LimitReader(r, int64(sz)), storiface.LocalPath{Path: ""})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -810,7 +810,7 @@ func BenchmarkAddPiece512M(b *testing.B) {
 				Number: abi.SectorNumber(i),
 			},
 			ProofType: abi.RegisteredSealProof_StackedDrg512MiBV1_1,
-		}, nil, sz, io.LimitReader(&nullreader.Reader{}, int64(sz)))
+		}, nil, sz, io.LimitReader(&nullreader.Reader{}, int64(sz)), storiface.LocalPath{Path: ""})
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -853,7 +853,7 @@ func TestAddPiece512MPadded(t *testing.T) {
 			Number: 0,
 		},
 		ProofType: abi.RegisteredSealProof_StackedDrg512MiBV1_1,
-	}, nil, sz, io.LimitReader(r, int64(sz/4)))
+	}, nil, sz, io.LimitReader(r, int64(sz/4)), storiface.LocalPath{Path: ""})
 	if err != nil {
 		t.Fatalf("add piece failed: %s", err)
 	}
@@ -1048,7 +1048,7 @@ func TestDCAPCloses(t *testing.T) {
 				Number: 0,
 			},
 			ProofType: abi.RegisteredSealProof_StackedDrg2KiBV1_1,
-		}, nil, sz, clr)
+		}, nil, sz, clr, storiface.LocalPath{Path: ""})
 		if err != nil {
 			t.Fatal(err)
 		}

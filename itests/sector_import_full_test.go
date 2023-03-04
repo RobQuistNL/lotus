@@ -119,7 +119,7 @@ func TestSectorImport(t *testing.T) {
 			dataReader := bytes.NewReader(bytes.Repeat([]byte{0}, int(pieceSize.Unpadded())))
 
 			// create the unsealed CC sector file
-			pieceInfo, err := sealer.AddPiece(ctx, sref, nil, pieceSize.Unpadded(), dataReader)
+			pieceInfo, err := sealer.AddPiece(ctx, sref, nil, pieceSize.Unpadded(), dataReader, storiface.LocalPath{Path: ""})
 			require.NoError(t, err)
 
 			// GENERATE THE TICKET

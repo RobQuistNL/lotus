@@ -83,7 +83,7 @@ func (mgr *SectorMgr) DataCid(ctx context.Context, size abi.UnpaddedPieceSize, p
 	panic("todo")
 }
 
-func (mgr *SectorMgr) AddPiece(ctx context.Context, sectorID storiface.SectorRef, existingPieces []abi.UnpaddedPieceSize, size abi.UnpaddedPieceSize, r io.Reader) (abi.PieceInfo, error) {
+func (mgr *SectorMgr) AddPiece(ctx context.Context, sectorID storiface.SectorRef, existingPieces []abi.UnpaddedPieceSize, size abi.UnpaddedPieceSize, r io.Reader, localPath storiface.LocalPath) (abi.PieceInfo, error) {
 	log.Warn("Add piece: ", sectorID, size, sectorID.ProofType)
 
 	var b bytes.Buffer
@@ -489,7 +489,7 @@ func (mgr *SectorMgr) StageFakeData(mid abi.ActorID, spt abi.RegisteredSealProof
 		ProofType: spt,
 	}
 
-	pi, err := mgr.AddPiece(context.TODO(), id, nil, usize, bytes.NewReader(buf))
+	pi, err := mgr.AddPiece(context.TODO(), id, nil, usize, bytes.NewReader(buf), storiface.LocalPath{Path: ""})
 	if err != nil {
 		return storiface.SectorRef{}, nil, err
 	}

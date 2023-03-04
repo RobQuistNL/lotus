@@ -161,11 +161,11 @@ func TestSimple(t *testing.T) {
 		ProofType: abi.RegisteredSealProof_StackedDrg2KiBV1,
 	}
 
-	pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+	pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, abi.PaddedPieceSize(1024), pi.Size)
 
-	piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]))
+	piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, abi.PaddedPieceSize(1024), piz.Size)
 
@@ -242,7 +242,7 @@ func TestSnapDeals(t *testing.T) {
 	unpaddedSectorSize := abi.PaddedPieceSize(ss).Unpadded()
 
 	// Pack sector with no pieces
-	p0, err := m.AddPiece(ctx, sid, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize))
+	p0, err := m.AddPiece(ctx, sid, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	ccPieces := []abi.PieceInfo{p0}
 
@@ -260,11 +260,11 @@ func TestSnapDeals(t *testing.T) {
 
 	// Two pieces each half the size of the sector
 	unpaddedPieceSize := unpaddedSectorSize / 2
-	p1, err := m.AddPiece(ctx, sid, nil, unpaddedPieceSize, strings.NewReader(strings.Repeat("k", int(unpaddedPieceSize))))
+	p1, err := m.AddPiece(ctx, sid, nil, unpaddedPieceSize, strings.NewReader(strings.Repeat("k", int(unpaddedPieceSize))), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, unpaddedPieceSize.Padded(), p1.Size)
 
-	p2, err := m.AddPiece(ctx, sid, []abi.UnpaddedPieceSize{p1.Size.Unpadded()}, unpaddedPieceSize, strings.NewReader(strings.Repeat("j", int(unpaddedPieceSize))))
+	p2, err := m.AddPiece(ctx, sid, []abi.UnpaddedPieceSize{p1.Size.Unpadded()}, unpaddedPieceSize, strings.NewReader(strings.Repeat("j", int(unpaddedPieceSize))), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, unpaddedPieceSize.Padded(), p1.Size)
 
@@ -379,11 +379,11 @@ func TestSnarkPackV2(t *testing.T) {
 	unpaddedSectorSize := abi.PaddedPieceSize(ss).Unpadded()
 
 	// Pack sector with no pieces
-	p1, err := m.AddPiece(ctx, sid1, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize))
+	p1, err := m.AddPiece(ctx, sid1, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	ccPieces1 := []abi.PieceInfo{p1}
 
-	p2, err := m.AddPiece(ctx, sid2, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize))
+	p2, err := m.AddPiece(ctx, sid2, nil, unpaddedSectorSize, NewNullReader(unpaddedSectorSize), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	ccPieces2 := []abi.PieceInfo{p2}
 
@@ -491,11 +491,11 @@ func TestRedoPC1(t *testing.T) {
 		ProofType: abi.RegisteredSealProof_StackedDrg2KiBV1,
 	}
 
-	pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+	pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, abi.PaddedPieceSize(1024), pi.Size)
 
-	piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]))
+	piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]), storiface.LocalPath{Path: ""})
 	require.NoError(t, err)
 	require.Equal(t, abi.PaddedPieceSize(1024), piz.Size)
 
@@ -546,11 +546,11 @@ func TestRestartManager(t *testing.T) {
 				ProofType: abi.RegisteredSealProof_StackedDrg2KiBV1,
 			}
 
-			pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+			pi, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 			require.NoError(t, err)
 			require.Equal(t, abi.PaddedPieceSize(1024), pi.Size)
 
-			piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]))
+			piz, err := m.AddPiece(ctx, sid, nil, 1016, bytes.NewReader(make([]byte, 1016)[:]), storiface.LocalPath{Path: ""})
 			require.NoError(t, err)
 			require.Equal(t, abi.PaddedPieceSize(1024), piz.Size)
 
@@ -654,7 +654,7 @@ func TestRestartWorker(t *testing.T) {
 	go func() {
 		defer close(apDone)
 
-		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 		require.Error(t, err)
 	}()
 
@@ -798,7 +798,7 @@ func TestResUse(t *testing.T) {
 	}
 
 	go func() {
-		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 		require.Error(t, err)
 	}()
 
@@ -860,7 +860,7 @@ func TestResOverride(t *testing.T) {
 	}
 
 	go func() {
-		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)))
+		_, err := m.AddPiece(ctx, sid, nil, 1016, strings.NewReader(strings.Repeat("testthis", 127)), storiface.LocalPath{Path: ""})
 		require.Error(t, err)
 	}()
 

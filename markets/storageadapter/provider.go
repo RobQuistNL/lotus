@@ -4,6 +4,7 @@ package storageadapter
 
 import (
 	"context"
+	"github.com/filecoin-project/lotus/storage/sealer/storiface"
 	"time"
 
 	"github.com/ipfs/go-cid"
@@ -104,7 +105,7 @@ func (n *ProviderNodeAdapter) OnDealComplete(ctx context.Context, deal storagema
 	}
 
 	// Attempt to add the piece to the sector
-	p, offset, err := n.secb.AddPiece(ctx, pieceSize, pieceData, sdInfo)
+	p, offset, err := n.secb.AddPiece(ctx, pieceSize, pieceData, sdInfo, storiface.LocalPath{Path: ""})
 	curTime := build.Clock.Now()
 	for build.Clock.Since(curTime) < addPieceRetryTimeout {
 		// Check if there was an error because of too many sectors being sealed
@@ -129,7 +130,7 @@ func (n *ProviderNodeAdapter) OnDealComplete(ctx context.Context, deal storagema
 			}
 
 			// Attempt to add the piece again
-			p, offset, err = n.secb.AddPiece(ctx, pieceSize, pieceData, sdInfo)
+			p, offset, err = n.secb.AddPiece(ctx, pieceSize, pieceData, sdInfo, storiface.LocalPath{Path: ""})
 		case <-ctx.Done():
 			return nil, xerrors.New("context expired while waiting to retry AddPiece")
 		}

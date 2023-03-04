@@ -108,7 +108,7 @@ func (s *schedTestWorker) NewSector(ctx context.Context, sector storiface.Sector
 	panic("implement me")
 }
 
-func (s *schedTestWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data) (storiface.CallID, error) {
+func (s *schedTestWorker) AddPiece(ctx context.Context, sector storiface.SectorRef, pieceSizes []abi.UnpaddedPieceSize, newPieceSize abi.UnpaddedPieceSize, pieceData storiface.Data, localPath storiface.LocalPath) (storiface.CallID, error) {
 	panic("implement me")
 }
 

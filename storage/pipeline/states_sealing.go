@@ -107,7 +107,7 @@ func (m *Sealing) padSector(ctx context.Context, sectorID storiface.SectorRef, e
 	for i, size := range sizes {
 		expectCid := zerocomm.ZeroPieceCommitment(size)
 
-		ppi, err := m.sealer.AddPiece(ctx, sectorID, existingPieceSizes, size, nullreader.NewNullReader(size))
+		ppi, err := m.sealer.AddPiece(ctx, sectorID, existingPieceSizes, size, nullreader.NewNullReader(size), storiface.LocalPath{Path: ""})
 		if err != nil {
 			return nil, xerrors.Errorf("add piece: %w", err)
 		}
