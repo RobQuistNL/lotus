@@ -676,7 +676,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -685,7 +685,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -694,7 +694,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -703,7 +703,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -712,7 +712,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -721,7 +721,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -730,7 +730,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -739,7 +739,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -748,7 +748,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -757,7 +757,7 @@ Response:
           "MinMemory": 1048576,
           "MaxMemory": 1048576,
           "GPUUtilization": 0,
-          "MaxParallelism": 0,
+          "MaxParallelism": 1,
           "MaxParallelismGPU": 0,
           "BaseMinMemory": 0,
           "MaxConcurrent": 0
@@ -1529,7 +1529,10 @@ Inputs:
 ```json
 [
   1024,
-  {}
+  {},
+  {
+    "Path": "string value"
+  }
 ]
 ```
 

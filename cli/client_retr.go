@@ -506,7 +506,7 @@ var clientRetrieveLsCmd = &cli.Command{
 
 			for _, link := range links {
 				val, err := json.Marshal(link)
-				if (err != nil) {
+				if err != nil {
 					fmt.Printf("No Json: %s %s\t%d\n", link.Cid, link.Name, link.Size)
 				} else {
 					fmt.Printf("%s\n", val)

@@ -403,7 +403,7 @@ var runCmd = &cli.Command{
 			}
 			if cctx.IsSet("commit") && cctx.Bool("commit") {
 				taskTypes = append(taskTypes, sealtasks.TTCommit2)
-				if (!hasCommit1) {
+				if !hasCommit1 {
 					taskTypes = append(taskTypes, sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1)
 				}
 			}
