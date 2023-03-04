@@ -1152,7 +1152,7 @@ type WorkerStruct struct {
 }
 
 type WorkerMethods struct {
-	AddPiece func(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data) (storiface.CallID, error) `perm:"admin"`
+	AddPiece func(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data, p5 storiface.LocalPath) (storiface.CallID, error) `perm:"admin"`
 
 	DataCid func(p0 context.Context, p1 abi.UnpaddedPieceSize, p2 storiface.Data, p3 storiface.LocalPath) (storiface.CallID, error) `perm:"admin"`
 
@@ -6653,14 +6653,14 @@ func (s *WalletStub) WalletSign(p0 context.Context, p1 address.Address, p2 []byt
 	return nil, ErrNotSupported
 }
 
-func (s *WorkerStruct) AddPiece(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data) (storiface.CallID, error) {
+func (s *WorkerStruct) AddPiece(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data, p5 storiface.LocalPath) (storiface.CallID, error) {
 	if s.Internal.AddPiece == nil {
 		return *new(storiface.CallID), ErrNotSupported
 	}
-	return s.Internal.AddPiece(p0, p1, p2, p3, p4)
+	return s.Internal.AddPiece(p0, p1, p2, p3, p4, p5)
 }
 
-func (s *WorkerStub) AddPiece(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data) (storiface.CallID, error) {
+func (s *WorkerStub) AddPiece(p0 context.Context, p1 storiface.SectorRef, p2 []abi.UnpaddedPieceSize, p3 abi.UnpaddedPieceSize, p4 storiface.Data, p5 storiface.LocalPath) (storiface.CallID, error) {
 	return *new(storiface.CallID), ErrNotSupported
 }
 

@@ -259,7 +259,7 @@ func (m *Sealing) handleAddPiece(ctx statemachine.Context, sector SectorInfo) er
 			deal.size,
 			deal.data,
 			storiface.LocalPath{Path: ""},
-			)
+		)
 		if err != nil {
 			err = xerrors.Errorf("writing piece: %w", err)
 			deal.accepted(sector.SectorNumber, offset, err)
