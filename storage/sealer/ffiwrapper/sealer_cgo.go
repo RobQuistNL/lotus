@@ -73,7 +73,7 @@ func (sb *Sealer) DataCid(ctx context.Context, pieceSize abi.UnpaddedPieceSize, 
 
 	// Check if the path is given and is available locally
 	if localPath.Path != "" {
-		log.Infof("Trying local file for DataCID", "filename", localPath.Path)
+		log.Infow("Trying local file for DataCID", "filename", localPath.Path)
 		localFile, err := os.OpenFile(localPath.Path, os.O_RDONLY, 0)
 		if err != nil {
 			log.Warnw("Can not open local file for DataCID, falling back to Stream reader", "filename", localPath.Path, "error", err)
@@ -301,7 +301,7 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 
 	// Check if the path is given and is available locally
 	if localPath.Path != "" {
-		log.Infof("Trying local file for AddPiece", "filename", localPath.Path)
+		log.Infow("Trying local file for AddPiece", "filename", localPath.Path)
 		localFile, err := os.OpenFile(localPath.Path, os.O_RDONLY, 0)
 		if err != nil {
 			log.Warnw("Can not open local file for AP, falling back to Stream reader", "filename", localPath.Path, "error", err)
@@ -318,7 +318,10 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 		log.Infof("Not using local file for AddPiece, as path is empty")
 	}
 
-	pr := io.TeeReader(io.LimitReader(pieceData, int64(pieceSize)), pw)
+	pr := io.TeeReader(io.LimitReader(io.MultiReader(
+		pieceData,
+		nullreader.Reader{},
+	), int64(pieceSize)), pw)
 
 	throttle := make(chan []byte, parallel)
 	piecePromises := make([]func() (abi.PieceInfo, error), 0)
@@ -385,6 +388,8 @@ func (sb *Sealer) AddPiece(ctx context.Context, sector storiface.SectorRef, exis
 			}
 		})
 	}
+
+	log.Infof("Right before closing Padded Writer")
 
 	if err := pw.Close(); err != nil {
 		return abi.PieceInfo{}, xerrors.Errorf("closing padded writer: %w", err)
