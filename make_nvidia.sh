@@ -34,8 +34,8 @@ NETWORK=mainnet
 if [ "$1" == "calibnet" ]; then
 NETWORK=calibnet
 fi
-cp lotus /var/www/lotus-binaries/lotus-$VERSION-$NETWORK
-cp lotus-miner /var/www/lotus-binaries/lotus-miner-$VERSION-$NETWORK
-cp lotus-worker /var/www/lotus-binaries/lotus-worker-$VERSION-$NETWORK
-cp lotus-bench /var/www/lotus-binaries/lotus-bench-$VERSION-$NETWORK
-cp lotus-shed /var/www/lotus-binaries/lotus-shed-$VERSION-$NETWORK
+cp lotus /var/www/lotus-binaries/lotus-$VERSION-$NETWORK-nvidia
+cp lotus-miner /var/www/lotus-binaries/lotus-miner-$VERSION-$NETWORK-nvidia
+cp lotus-worker /var/www/lotus-binaries/lotus-worker-$VERSION-$NETWORK-nvidia
+cp lotus-bench /var/www/lotus-binaries/lotus-bench-$VERSION-$NETWORK-nvidia
+cp lotus-shed /var/www/lotus-binaries/lotus-shed-$VERSION-$NETWORK-nvidia
