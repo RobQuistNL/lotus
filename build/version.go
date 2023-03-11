@@ -44,5 +44,5 @@ func UserVersion() string {
 		return BuildVersion
 	}
 
-	return BuildVersion + BuildTypeString() + CurrentCommit
+	return BuildVersion + BuildTypeString()
 }
