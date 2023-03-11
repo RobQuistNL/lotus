@@ -382,13 +382,15 @@ var runCmd = &cli.Command{
 			taskTypes = append(taskTypes, sealtasks.TTFetch) // All workers should always have fetch
 
 			if (cctx.IsSet("addpiece")) && cctx.Bool("addpiece") {
-				taskTypes = append(taskTypes, sealtasks.TTAddPiece, sealtasks.TTDataCid)
+				taskTypes = append(taskTypes, sealtasks.TTAddPiece, sealtasks.TTDataCid, sealtasks.TTFinalizeUnsealed)
 			}
 			if (cctx.IsSet("sector-download")) && cctx.Bool("sector-download") {
 				taskTypes = append(taskTypes, sealtasks.TTDownloadSector)
 			}
 			if (cctx.IsSet("precommit1")) && cctx.Bool("precommit1") {
-				taskTypes = append(taskTypes, sealtasks.TTPreCommit1)
+				taskTypes = append(taskTypes, sealtasks.TTPreCommit1, sealtasks.TTFinalizeUnsealed)
+				//FinalizeUnsealed has nothing to do with unsealing, but its about cleaing up the unsealed sector
+				// data, which is usually only contained on the PC1 machine
 			}
 			if (cctx.IsSet("unseal")) && cctx.Bool("unseal") {
 				taskTypes = append(taskTypes, sealtasks.TTUnseal)
