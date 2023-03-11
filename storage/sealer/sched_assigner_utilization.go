@@ -73,13 +73,14 @@ func LowestUtilizationWS(sh *Scheduler, queueLen int, acceptableWindows [][]int,
 			continue
 		}
 
-		//log.Debugw("SCHED ASSIGNED",
-		//	"sqi", sqi,
-		//	"sector", task.Sector.ID.Number,
-		//	"task", task.TaskType,
-		//	"window", selectedWindow,
-		//	"worker", bestWid,
-		//	"utilization", bestUtilization)
+		log.Debugw("SCHED ASSIGNED",
+			"sqi", sqi,
+			"sector", task.Sector.ID.Number,
+			"task", task.TaskType,
+			//	"window", selectedWindow,
+			"worker", bestWid,
+			//	"utilization", bestUtilization
+		)
 
 		workerUtil[bestWid] += windows[selectedWindow].Allocated.Add(task.SealTask(), info.Resources, needRes)
 		windows[selectedWindow].Todo = append(windows[selectedWindow].Todo, task)

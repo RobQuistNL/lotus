@@ -55,13 +55,14 @@ func SpreadWS(sh *Scheduler, queueLen int, acceptableWindows [][]int, windows []
 			continue
 		}
 
-		//log.Debugw("SCHED ASSIGNED",
-		//	"sqi", sqi,
-		//	"sector", task.Sector.ID.Number,
-		//	"task", task.TaskType,
-		//	"window", selectedWindow,
-		//	"worker", bestWid,
-		//	"assigned", bestAssigned)
+		log.Debugw("SCHED ASSIGNED",
+			"sqi", sqi,
+			"sector", task.Sector.ID.Number,
+			"task", task.TaskType,
+			//"window", selectedWindow,
+			"worker", bestWid,
+			//"assigned", bestAssigned
+		)
 
 		workerAssigned[bestWid]++
 		windows[selectedWindow].Allocated.Add(task.SealTask(), info.Resources, needRes)
