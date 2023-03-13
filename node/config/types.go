@@ -443,6 +443,7 @@ type SealerConfig struct {
 	AllowReplicaUpdate       bool
 	AllowProveReplicaUpdate2 bool
 	AllowRegenSectorKey      bool
+	AllowFinalizeFetch       bool
 
 	// LocalWorkerName specifies a custom name for the builtin worker.
 	// If set to an empty string (default) os hostname will be used

@@ -169,6 +169,7 @@ func DefaultStorageMiner() *StorageMiner {
 			AllowReplicaUpdate:       true,
 			AllowProveReplicaUpdate2: true,
 			AllowRegenSectorKey:      true,
+			AllowFinalizeFetch:       false,
 
 			// Default to 10 - tcp should still be able to figure this out, and
 			// it's the ratio between 10gbit / 1gbit

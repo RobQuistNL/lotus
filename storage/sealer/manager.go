@@ -145,6 +145,9 @@ func New(ctx context.Context, lstor *paths.Local, stor paths.Store, ls paths.Loc
 		// Disable all tasks for the miner instance (we only use workers)
 		//sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1, sealtasks.TTFinalize, sealtasks.TTFetch, sealtasks.TTFinalizeUnsealed, sealtasks.TTFinalizeReplicaUpdate,
 	}
+	if sc.AllowFinalizeFetch {
+		localTasks = append(localTasks, sealtasks.TTCommit1, sealtasks.TTProveReplicaUpdate1, sealtasks.TTFinalize, sealtasks.TTFetch, sealtasks.TTFinalizeUnsealed, sealtasks.TTFinalizeReplicaUpdate)
+	}
 	if sc.AllowSectorDownload {
 		localTasks = append(localTasks, sealtasks.TTDownloadSector)
 	}
