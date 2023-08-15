@@ -22,12 +22,14 @@ type Common struct {
 // FullNode is a full node config
 type FullNode struct {
 	Common
-	Client     Client
-	Wallet     Wallet
-	Fees       FeeConfig
-	Chainstore Chainstore
-	Cluster    UserRaftConfig
-	Fevm       FevmConfig
+	Client        Client
+	Wallet        Wallet
+	Fees          FeeConfig
+	Chainstore    Chainstore
+	Cluster       UserRaftConfig
+	Fevm          FevmConfig
+	Index         IndexConfig
+	FaultReporter FaultReporterConfig
 }
 
 // // Common
@@ -351,15 +353,7 @@ type SealingConfig struct {
 	// required to have expiration of at least the soonest-ending deal
 	MinUpgradeSectorExpiration uint64
 
-	// When set to a non-zero value, minimum number of epochs until sector expiration above which upgrade candidates will
-	// be selected based on lowest initial pledge.
-	//
-	// Target sector expiration is calculated by looking at the input deal queue, sorting it by deal expiration, and
-	// selecting N deals from the queue up to sector size. The target expiration will be Nth deal end epoch, or in case
-	// where there weren't enough deals to fill a sector, DealMaxDuration (540 days = 1555200 epochs)
-	//
-	// Setting this to a high value (for example to maximum deal duration - 1555200) will disable selection based on
-	// initial pledge - upgrade sectors will always be chosen based on longest expiration
+	// DEPRECATED: Target expiration is no longer used
 	MinTargetUpgradeSectorExpiration uint64
 
 	// CommittedCapacitySectorLifetime is the duration a Committed Capacity (CC) sector will
@@ -420,6 +414,13 @@ type SealingConfig struct {
 	// network BaseFee below which to stop doing commit aggregation, instead
 	// submitting proofs to the chain individually
 	AggregateAboveBaseFee types.FIL
+
+	// When submitting several sector prove commit messages simultaneously, this option allows you to
+	// stagger the number of prove commits submitted per epoch
+	// This is done because gas estimates for ProveCommits are non deterministic and increasing as a large
+	// number of sectors get committed within the same epoch resulting in occasionally failed msgs.
+	// Submitting a smaller number of prove commits per epoch would reduce the possibility of failed msgs
+	MaxSectorProveCommitsSubmittedPerEpoch uint64
 
 	TerminateBatchMax  uint64
 	TerminateBatchMin  uint64
@@ -726,4 +727,30 @@ type Events struct {
 	// Set a limit on the number of active websocket subscriptions (may be zero)
 	// Set a timeout for subscription clients
 	// Set upper bound on index size
+}
+
+type IndexConfig struct {
+	// EXPERIMENTAL FEATURE. USE WITH CAUTION
+	// EnableMsgIndex enables indexing of messages on chain.
+	EnableMsgIndex bool
+}
+
+type FaultReporterConfig struct {
+	// EnableConsensusFaultReporter controls whether the node will monitor and
+	// report consensus faults. When enabled, the node will watch for malicious
+	// behaviors like double-mining and parent grinding, and submit reports to the
+	// network. This can earn reporter rewards, but is not guaranteed. Nodes should
+	// enable fault reporting with care, as it may increase resource usage, and may
+	// generate gas fees without earning rewards.
+	EnableConsensusFaultReporter bool
+
+	// ConsensusFaultReporterDataDir is the path where fault reporter state will be
+	// persisted. This directory should have adequate space and permissions for the
+	// node process.
+	ConsensusFaultReporterDataDir string
+
+	// ConsensusFaultReporterAddress is the wallet address used for submitting
+	// ReportConsensusFault messages. It will pay for gas fees, and receive any
+	// rewards. This address should have adequate funds to cover gas fees.
+	ConsensusFaultReporterAddress string
 }

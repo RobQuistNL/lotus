@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ipfs/go-blockservice"
+	"github.com/ipfs/boxo/blockservice"
+	offline "github.com/ipfs/boxo/exchange/offline"
+	"github.com/ipfs/boxo/ipld/merkledag"
 	"github.com/ipfs/go-cid"
-	offline "github.com/ipfs/go-ipfs-exchange-offline"
 	format "github.com/ipfs/go-ipld-format"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/ipfs/go-merkledag"
 	"github.com/ipld/go-car"
 	"golang.org/x/xerrors"
 
@@ -34,6 +34,7 @@ import (
 	"github.com/filecoin-project/lotus/chain/consensus"
 	"github.com/filecoin-project/lotus/chain/consensus/filcns"
 	genesis2 "github.com/filecoin-project/lotus/chain/gen/genesis"
+	"github.com/filecoin-project/lotus/chain/index"
 	"github.com/filecoin-project/lotus/chain/rand"
 	"github.com/filecoin-project/lotus/chain/stmgr"
 	"github.com/filecoin-project/lotus/chain/store"
@@ -256,7 +257,7 @@ func NewGeneratorWithSectorsAndUpgradeSchedule(numSectors int, us stmgr.UpgradeS
 	//return nil, xerrors.Errorf("creating drand beacon: %w", err)
 	//}
 
-	sm, err := stmgr.NewStateManager(cs, consensus.NewTipSetExecutor(filcns.RewardFunc), sys, us, beac, ds)
+	sm, err := stmgr.NewStateManager(cs, consensus.NewTipSetExecutor(filcns.RewardFunc), sys, us, beac, ds, index.DummyMsgIndex)
 	if err != nil {
 		return nil, xerrors.Errorf("initing stmgr: %w", err)
 	}

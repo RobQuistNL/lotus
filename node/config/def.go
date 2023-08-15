@@ -57,6 +57,10 @@ func defCommon() Common {
 			ListenAddresses: []string{
 				"/ip4/0.0.0.0/tcp/0",
 				"/ip6/::/tcp/0",
+				"/ip4/0.0.0.0/udp/0/quic-v1",
+				"/ip6/::/udp/0/quic-v1",
+				"/ip4/0.0.0.0/udp/0/quic-v1/webtransport",
+				"/ip6/::/udp/0/quic-v1/webtransport",
 			},
 			AnnounceAddresses:   []string{},
 			NoAnnounceAddresses: []string{},
@@ -151,9 +155,10 @@ func DefaultStorageMiner() *StorageMiner {
 			BatchPreCommitAboveBaseFee: types.FIL(types.BigMul(types.PicoFil, types.NewInt(320))), // 0.32 nFIL
 			AggregateAboveBaseFee:      types.FIL(types.BigMul(types.PicoFil, types.NewInt(320))), // 0.32 nFIL
 
-			TerminateBatchMin:  1,
-			TerminateBatchMax:  100,
-			TerminateBatchWait: Duration(5 * time.Minute),
+			TerminateBatchMin:                      1,
+			TerminateBatchMax:                      100,
+			TerminateBatchWait:                     Duration(5 * time.Minute),
+			MaxSectorProveCommitsSubmittedPerEpoch: 20,
 		},
 
 		Proving: ProvingConfig{
@@ -230,7 +235,7 @@ func DefaultStorageMiner() *StorageMiner {
 			EnableMining:        true,
 			EnableSealing:       true,
 			EnableSectorStorage: true,
-			EnableMarkets:       true,
+			EnableMarkets:       false,
 		},
 
 		Fees: MinerFeeConfig{

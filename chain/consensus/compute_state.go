@@ -110,6 +110,7 @@ func (t *TipSetExecutor) ApplyBlocks(ctx context.Context,
 			TipSetGetter:   stmgr.TipSetGetterForTipset(sm.ChainStore(), ts),
 			Tracing:        vmTracing,
 			ReturnEvents:   sm.ChainStore().IsStoringEvents(),
+			ExecutionLane:  vm.ExecutionLanePriority,
 		}
 
 		return sm.VMConstructor()(ctx, vmopt)
@@ -132,6 +133,10 @@ func (t *TipSetExecutor) ApplyBlocks(ctx context.Context,
 		ret, err := vmCron.ApplyImplicitMessage(ctx, cronMsg)
 		if err != nil {
 			return xerrors.Errorf("running cron: %w", err)
+		}
+
+		if !ret.ExitCode.IsSuccess() {
+			return xerrors.Errorf("cron failed with exit code %d: %w", ret.ExitCode, ret.ActorErr)
 		}
 
 		cronGas += ret.GasUsed

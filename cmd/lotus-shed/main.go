@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
 
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/urfave/cli/v2"
@@ -26,6 +28,7 @@ func main() {
 		base32Cmd,
 		base16Cmd,
 		bitFieldCmd,
+		chainwatchCmd,
 		cronWcCmd,
 		frozenMinersCmd,
 		dealLabelCmd,
@@ -83,6 +86,9 @@ func main() {
 		invariantsCmd,
 		gasTraceCmd,
 		replayOfflineCmd,
+		indexesCmd,
+		FevmAnalyticsCmd,
+		mismatchesCmd,
 	}
 
 	app := &cli.App{
@@ -114,7 +120,20 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	// terminate early on ctrl+c
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		<-c
+		cancel()
+		fmt.Println("Received interrupt, shutting down... Press CTRL+C again to force shutdown")
+		<-c
+		fmt.Println("Forcing stop")
+		os.Exit(1)
+	}()
+
+	if err := app.RunContext(ctx, os.Args); err != nil {
 		log.Errorf("%+v", err)
 		os.Exit(1)
 		return

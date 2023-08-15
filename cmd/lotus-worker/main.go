@@ -280,6 +280,12 @@ var runCmd = &cli.Command{
 			Name:  "http-server-timeout",
 			Value: "30s",
 		},
+		&cli.BoolFlag{
+			Name:        "data-cid",
+			Usage:       "Run the data-cid task. true|false",
+			Value:       true,
+			DefaultText: "inherits --addpiece",
+		},
 	},
 	Before: func(cctx *cli.Context) error {
 		if cctx.IsSet("address") {
@@ -300,6 +306,13 @@ var runCmd = &cli.Command{
 			}
 		}
 
+		// ensure tmpdir exists
+		td := os.TempDir()
+		if err := os.MkdirAll(td, 0755); err != nil {
+			return xerrors.Errorf("ensuring temp dir %s exists: %w", td, err)
+		}
+
+		// Check file descriptor limit
 		limit, _, err := ulimit.GetLimit()
 		switch {
 		case err == ulimit.ErrUnsupported:
