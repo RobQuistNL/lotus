@@ -175,6 +175,7 @@ func (sd *SectorLocation) HttpHeaders() http.Header {
 }
 
 // note: we can't use http.Header as that's backed by a go map, which is all kinds of messy
+
 type SecDataHttpHeader struct {
 	Key   string
 	Value string
